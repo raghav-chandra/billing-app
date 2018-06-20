@@ -1,0 +1,7 @@
+
+export USER_ACTIONS ={
+    CREATE_BILL:'CREATE_BILL'
+}
+
+export REDUX_ACTIONS ={
+}
