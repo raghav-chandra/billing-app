@@ -19,16 +19,17 @@ export function execute(action, param, data = null) {
 }
 
 function createBill(dispatch, action, param, data) {
-    return executePostRequest(dispatch, action, param, data, HTTP_POST);
+    return executeRequest(dispatch, action, param, data, HTTP_POST);
 }
 
 function executePostRequest () {
+    executeRequest(dispatch,param, data )
 }
 
 function executeGetRequest () {
 }
 
-function executeRequest () {
+function executeRequest (dispatch, url, data, requestType) {
     const createPromise = (requestType) =>{
         if(requestType === HTTP_GET) {
             fetch(url, {credentials: 'include'})

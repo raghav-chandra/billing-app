@@ -4,7 +4,6 @@ import {Login} from './login';
 import {NewBill} from './billing/newBill';
 
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
-//import {Navbar} from 'react-router-bootstrap';
 
 export class Restaurant extends React.Component {
     constructor(props) {
@@ -58,3 +57,4 @@ export class Restaurant extends React.Component {
         );
     }
 }
+

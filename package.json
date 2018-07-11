@@ -30,11 +30,13 @@
     "html-webpack-plugin": "^2.30.1",
     "httpserver": "^0.3.0",
     "react": "^16.0.0",
+    "react-thunk": "latest",
+    "react-logger":"latest",
     "react-bootstrap": "^0.31.3",
     "react-dom": "^16.0.0",
     "react-transition-group": "^2.2.1",
-    "react-data-grid":"4.0.7",
-    "react-data-grid-addons":"4.0.8"
+    "react-data-grid": "4.0.7",
+    "react-data-grid-addons": "4.0.8"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
