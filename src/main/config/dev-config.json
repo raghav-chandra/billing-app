@@ -1,0 +1,5 @@
+{
+  "hostname": "localhost",
+  "web.port": 5600,
+  "web.root": "dist"
+}

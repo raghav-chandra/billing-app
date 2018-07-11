@@ -3,7 +3,8 @@ import React from 'react';
 import {Login} from './login';
 import {NewBill} from './billing/newBill';
 
-import {Nav, NavItem, Navbar, NavDropdown, MenuItem} from 'react-bootstrap';
+import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
+//import {Navbar} from 'react-router-bootstrap';
 
 export class Restaurant extends React.Component {
     constructor(props) {
@@ -23,7 +24,7 @@ export class Restaurant extends React.Component {
             component = <NewBill />;
         } else if (this.state.activeTab === '3.1') {
             component = <Report />;
-        } else if (this.state.activeTab === '4.1'{
+        } else if (this.state.activeTab === '4.1') {
             component = <MenuItem />;
         }
 
@@ -34,9 +35,10 @@ export class Restaurant extends React.Component {
                             <a href='#'> Billing System </a>
                         </Navbar.Brand>
                         <Navbar.Toggle>
+                        </Navbar.Toggle>
                     </Navbar.Header>
 
-                    <Nabvbar.Collapse>
+                    <Navbar.Collapse>
                         <Nav bsStyle='pills' activeKey={this.state.activeTab} onSelect={this.handleSelect}>
                             <NavItem eventKey={1} href='#'> New Bill </NavItem>
 
@@ -49,7 +51,7 @@ export class Restaurant extends React.Component {
                         <Nav pullRight>
                             <NavItem eventKey={5} href='#'> Welcome </NavItem>
                         </Nav>
-                    </Nabvbar.Collapse>
+                    </Navbar.Collapse>
                 </Navbar>
                 {component}
             </div>
