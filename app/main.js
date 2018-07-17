@@ -5,21 +5,12 @@ import {Provider} from 'react-redux';
 import thunkMiddleware from 'react-thunk';
 import createLogger from 'react-logger';
 
-import {Restaurant} from './restaurant/main'
+import restaurantReducer from "./restaurant/reducers";
+import {USER_ACTIONS} from './restaurant/constants';
+import {execute} from './restaurant/network';
+import {Restaurant} from './restaurant/main';
+
 
 export const store = createStore(restaurantReducer, applyMiddleware(thunkMiddleware,createLogger()));
-
-class App extends React.Component{
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (<Provider store={store}>
-            <Restaurant />
-        </Provider>)
-    }
-}
-
-
-ReactDOM.render(<App />,document.getElementById('billing-content'));
+store.dispatch(execute(USER_ACTIONS.FETCH_ALL_ITEMS,null));
+ReactDOM.render(<Provider store={store}><Restaurant /></Provider>,document.getElementById('billing-content'));

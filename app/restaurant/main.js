@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {Login} from './login';
-import {NewBill} from './billing/newBill';
+import CreateBill from './billing/newBill';
 
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 
@@ -20,7 +20,7 @@ export class Restaurant extends React.Component {
         let component = <Login />;
 
         if(this.state.activeTab ===1) {
-            component = <NewBill />;
+            component = <CreateBill />;
         } else if (this.state.activeTab === '3.1') {
             component = <Report />;
         } else if (this.state.activeTab === '4.1') {

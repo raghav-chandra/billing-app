@@ -1,11 +1,14 @@
 
-import {USER_ACTIONS} from './constants'
+
+import {USER_ACTIONS} from './constants';
+import {retrieveItems} from './action';
 
 const HTTP_GET ='GET';
 const HTTP_POST ='POST';
 
 const CALL_MAPPER= {
-    USER_ACTIONS.CREATE_BILL : createBill
+    USER_ACTIONS.CREATE_BILL : createBill,
+    USER_ACTIONS.FETCH_ALL_ITEMS: fetchAllItems
 }
 
 export function execute(action, param, data = null) {
@@ -19,17 +22,22 @@ export function execute(action, param, data = null) {
 }
 
 function createBill(dispatch, action, param, data) {
-    return executeRequest(dispatch, action, param, data, HTTP_POST);
+    return executePostRequest(dispatch, 'billing/bills/create', data);
 }
 
-function executePostRequest () {
-    executeRequest(dispatch,param, data )
+function createBill(dispatch, action, param, data) {
+    return executeGetRequest(dispatch, 'billing/items/getALl');
 }
 
-function executeGetRequest () {
+function executePostRequest (dispatch, url, data, successAction) {
+    executeRequest(dispatch,url,successAction,HTTP_POST, data);
 }
 
-function executeRequest (dispatch, url, data, requestType) {
+function executeGetRequest (dispatch, url, successAction) {
+    executeRequest(dispatch,url,retrieveItems, HTTP_GET);
+}
+
+function executeRequest (dispatch, url, requestType,successAction, data) {
     const createPromise = (requestType) =>{
         if(requestType === HTTP_GET) {
             fetch(url, {credentials: 'include'})
@@ -48,11 +56,11 @@ function executeRequest (dispatch, url, data, requestType) {
         if(!response.ok) {
             throw response.statusText;
         } else {
-            response.json();
+            return response.json();
         }
     }).then (json=>{
         if(json.success) {
-            //Successfull
+            return dispatch successAction(json.data);
         } else {
             throw json.message;
         }
