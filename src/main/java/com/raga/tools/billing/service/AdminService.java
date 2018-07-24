@@ -15,14 +15,35 @@ public class AdminService {
         return new CreateMenuItem();
     }
 
-    private static class CreateMenuItem extends AbstractRequestHandler<JsonObject,JsonObject>{
+    public static Handler<RoutingContext> getAllItemsHandler() {
+        return new GetRequestHandler(RequestType.GET_ALL_ITEMS);
+    }
+
+    public static Handler<RoutingContext> getAllConfigsHandler() {
+        return new GetRequestHandler(RequestType.GET_ALL_CONFIGS);
+    }
+
+    private static class CreateMenuItem extends AbstractRequestHandler<JsonObject, JsonObject> {
         public CreateMenuItem() {
             super("menuItem", RequestType.CREATE_MENU_ITEM);
         }
 
         @Override
         protected JsonObject getRequestData(HttpServerRequest request, Buffer body) {
-            return body==null ? new JsonObject(): body.toJsonObject();
+            return body == null ? new JsonObject() : body.toJsonObject();
+        }
+    }
+
+    private static class GetRequestHandler extends AbstractRequestHandler<JsonObject, JsonObject> {
+
+
+        public GetRequestHandler(RequestType requestType) {
+            super("", requestType);
+        }
+
+        @Override
+        protected JsonObject getRequestData(HttpServerRequest request, Buffer body) {
+            return null;
         }
     }
 }

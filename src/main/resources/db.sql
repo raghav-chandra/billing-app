@@ -1,6 +1,7 @@
 create table Bills (
     BillId      int not null primary key AUTO_INCREMENT,
     CustomerId  int not null,
+    BillDate    date not null,
     UpdatedBy   varchar(50) not null,
     UpdatedAt   timestamp default current_timestamp on update current_timestamp
 )
@@ -10,6 +11,7 @@ create table BillItems (
     BillId          int not null,
     ItemId          int not null,
     Quantity        int not null,
+    Price           float not null,
     GSTPerc         float not null,
     DiscountPerc    float not null,
     UpdatedBy       varchar(50) not null,

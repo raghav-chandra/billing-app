@@ -32,7 +32,11 @@ public class AbstractDBVertical extends AbstractVerticle {
         return jdbcClient;
     }
 
-    protected void executeUpdate(String sql, JsonArray params, Message message) {
+    void executeUpdate(String sql, JsonArray params, Message message) {
+        executeUpdate(sql, params, message, Message::reply);
+    }
+
+    void executeUpdate(String sql, JsonArray params, Message message, ResultHandler<JsonObject> resultHandler) {
         getJdbcClient().getConnection(handler -> {
             if (handler.failed()) {
                 message.fail(500, "Couldn't get DB Connections");
@@ -44,7 +48,7 @@ public class AbstractDBVertical extends AbstractVerticle {
                         if (bill.failed()) {
                             message.fail(500, "Failed while creating item. Please retry");
                         } else {
-                            message.reply("Item created successfully");
+                            message.reply(bill.result().getKeys().getInstant(0));
                         }
                     });
                 } catch (Exception e) {
@@ -52,5 +56,33 @@ public class AbstractDBVertical extends AbstractVerticle {
                 }
             }
         });
+    }
+
+    void executeGet(String sql, JsonArray params, Message message, ResultHandler<JsonArray> resultHandler) {
+        getJdbcClient().getConnection(handler -> {
+            if (handler.failed()) {
+                message.fail(500, "Failed while connecting to DB: " + handler.cause().getMessage());
+            } else {
+                try (SQLConnection connection = handler.result()) {
+                    connection.queryWithParams(sql, params, res -> {
+                        if (res.failed()) {
+                            message.fail(500, res.cause().getMessage());
+                        } else {
+                            resultHandler.handle(message, res.result().toJson().getJsonArray("rows"));
+                        }
+                    });
+                } catch (Exception e) {
+                    message.fail(500, e.getMessage());
+                }
+            }
+        });
+    }
+
+    void executeGet(String sql, JsonArray params, Message message) {
+        executeGet(sql, params, message, Message::reply);
+    }
+
+    interface ResultHandler<T> {
+        void handle(Message message, T result);
     }
 }

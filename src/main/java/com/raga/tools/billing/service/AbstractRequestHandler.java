@@ -34,7 +34,7 @@ public abstract class AbstractRequestHandler<S, T> implements Handler<RoutingCon
 
     }
 
-    private void handleFuture(HttpServerRequest request, S requestData, Future<T> future, EventBus eventBus) {
+    protected void handleFuture(HttpServerRequest request, S requestData, Future<T> future, EventBus eventBus) {
         future.setHandler(handler -> {
             if (handler.succeeded()) {
                 onSuccess(request, handler.result());

@@ -20,7 +20,7 @@ const columns = (allItems) =>{
         {key:'gst', name:'GST %',editable:true, resizable:true},
         {key:'gstAmount', name:'GST Amount',editable:false, resizable:true},
         {key:'total', name:'Total',editable:false, resizable:true}
-    ];
+    ];.
 }
 
 const flattenData= (allItems)=>{
@@ -42,7 +42,7 @@ const itemPriceMap = (allItems) =>{
 
 let gridInstance = null;
 
-const initialRow = () =>{
+const initialRow = () => {
     return {no:1, item:'', qty:0, amount:0, discount:0, gst:0, total:0,gstAmount:0,totalMRP:0,totalDisc:0}
 }
 

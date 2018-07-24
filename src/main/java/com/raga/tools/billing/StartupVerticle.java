@@ -2,14 +2,22 @@ package com.raga.tools.billing;
 
 import com.raga.tools.billing.service.AdminService;
 import com.raga.tools.billing.service.BillingService;
+import com.raga.tools.billing.vertical.AbstractDBVertical;
+import com.raga.tools.billing.vertical.AdminVertical;
 import com.raga.tools.billing.vertical.BillingVertical;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Verticle;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by ragha on 22-04-2018.
@@ -20,18 +28,38 @@ public class StartupVerticle extends AbstractVerticle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StartupVerticle.class);
 
+    private static final List<Class> VERTICLES = new ArrayList<>();
+
+    static {
+        VERTICLES.add(BillingVertical.class);
+        VERTICLES.add(BillingVertical.class);
+    }
+
+
     @Override
     public void start() throws Exception {
         JsonObject config = config();
 
         Router router = Router.router(vertx);
 
-        vertx.deployVerticle(BillingVertical.class, new DeploymentOptions().setConfig(config), handler -> {
-            System.out.println("Deployed " + BillingVertical.class.getName());
+        VERTICLES.forEach(verticle -> {
+            vertx.deployVerticle(verticle, new DeploymentOptions().setConfig(config), handler -> {
+                if (handler.succeeded()) {
+                    System.out.println("Deployed " + BillingVertical.class.getName());
+                } else {
+                    throw new RuntimeException("Failed deployment", handler.cause());
+                }
+            });
         });
+
+        router.route().handler(BodyHandler.create());
 
         router.post("/billing/bills/create").handler(BillingService.createBillHandler());
         router.post("/billing/admin/addItem").handler(AdminService.addMenuItemHandler());
+
+        router.get("billing/items/getAll").handler(AdminService.getAllItemsHandler());
+        router.get("billing/bill/:billId").handler(BillingService.getBillByIdHandler());
+        router.get("billing/configs/getAll").handler(AdminService.getAllConfigsHandler());
 
         router.route().handler(StaticHandler.create(config().getString(WEB_ROOT)));
 
