@@ -8,6 +8,8 @@ import io.vertx.ext.jdbc.JDBCClient;
 import io.vertx.ext.sql.SQLConnection;
 import io.vertx.ext.sql.SQLOptions;
 
+import java.util.List;
+
 /**
  * Created by ragha on 22-04-2018.
  */
@@ -49,6 +51,26 @@ public class AbstractDBVertical extends AbstractVerticle {
                             message.fail(500, "Failed while creating item. Please retry");
                         } else {
                             message.reply(bill.result().getKeys().getInstant(0));
+                        }
+                    });
+                } catch (Exception e) {
+                    message.fail(500, e.getMessage());
+                }
+            }
+        });
+    }
+
+    void executeBatchUpdate(String sql, List<JsonArray> params, Message message) {
+        getJdbcClient().getConnection(handler -> {
+            if (handler.failed()) {
+                message.fail(500, "Failed while connecting to DB: " + handler.cause().getMessage());
+            } else {
+                try (SQLConnection connection = handler.result()) {
+                    connection.batchWithParams(sql, params, res -> {
+                        if(res.failed()) {
+                            message.fail(500, "Failed while creati\ng BIll Item : "+res.cause().getMessage());
+                        } else {
+                            message.reply(res.result());
                         }
                     });
                 } catch (Exception e) {
