@@ -3,12 +3,15 @@ import {connect} from 'react-redux';
 
 import ReactDataGrid from 'react-data-grid';
 import {Toolbar, Editors} from 'react-data-grid-addons';
-
 import {Form, FormControl, FormGroup, Button, ControlLabel, Col, Row} form 'react-bootstrap';
 
-import {clone} form '../util/JSUtil'
-import {execute} form '../network'
-import {USER_ACTIONS} from '../constants'
+import moment from 'moment';
+
+import {clone} form '../util/JSUtil';
+import {execute} form '../network';
+import {USER_ACTIONS} from '../constants';
+
+import {getDetails} from '../util/ConfigUtil';
 
 const columns = (allItems) =>{
     return [
@@ -32,28 +35,31 @@ const flattenData= (allItems)=>{
     return data;
 }
 
-const itemPriceMap = (allItems) =>{
+const keyValueMap = (allItems, key, value) =>{
     let data = {};
     allItems.forEach(item=>{
-        data[item.Item] = item.Price;
+        data[item[key]] = item[value];
     });
     return data;
 }
 
 let gridInstance = null;
 
-const initialRow = () => {
-    return {no:1, item:'', qty:0, amount:0, discount:0, gst:0, total:0,gstAmount:0,totalMRP:0,totalDisc:0}
+const initialRow = (defaultGST) => {
+    return {no:1, item:'', qty:0, amount:0, discount:0, gst:defaultGST, total:0,gstAmount:0,totalMRP:0,totalDisc:0}
 }
 
 export class NewBill extends React.Component {
     constructor(props) {
         super(props);
+        let defaultGST = getDetails(this.props.configs).defaultGST;
         this.state = {
             rows:[initialRow()],
             date:moment().format('YYYY-MM-DD'),mobile:null,name:null,
+            defaultGST:defaultGST,
             billAmount:0,totalDisc:0,totalGST:0,totalMRP:0,
-            priceMap:itemPriceMap(this.props.allItems)
+            priceMap:keyValueMap(this.props.allItems, 'Item','Price'),
+            nameIdMap:keyValueMap(this.props.allItems, 'Item','ItemId')
         };
         this.getRowAt = this.getRowAt.bind(this);
         this.handleGridRowUpdate = this.handleGridRowUpdate.bind(this);
@@ -62,7 +68,41 @@ export class NewBill extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({priceMap:itemPriceMap(nextProps.allItems)});
+        this.setState({
+            priceMap:keyValueMap(nextProps.allItems,'Item','Price'),
+            nameIdMap:keyValueMap(nextProps.allItems, 'Item','ItemId')
+            defaultGST:getDetails(nextProps.configs).defaultGST
+        });
+    }
+
+    handleSave(e) {
+        e.preventDefault();
+        let bill = {};
+        bill.billItems = [];
+        this.state.rows.forEach(row=>{
+            let itemId = this.state.nameIdMap[row.item];
+            if(!itemId){
+                alert('Please select an item from teh list');
+                return;
+            }
+
+            let data = {
+                itemId:itemId,
+                qty: parseInt(row.qty),
+                price: parseFloat(row.price),
+                gst: parseFloat(row.gst),
+                discount: parseFloat(row.discount)
+            }
+            bill.billItems.push(data);
+        });
+
+        blll.user = 'raghav';
+        blll.address = 'Online';
+        blll.name = this.state.name;
+        blll.mobile = this.state.mobile;
+        blll.date = this.state.date;
+
+        this.props.saveBill(bill);
     }
 
     handleGridRowUpdate(context) {
@@ -87,7 +127,7 @@ export class NewBill extends React.Component {
             //Add new row on validation
             let prevRow = rows [rows.length-1];
             if(prevRow.total>0 && prevRow.item && prevRow.item.trim().length) {
-                let newRow = initialRow();
+                let newRow = initialRow(this.state.defaultGST);
                 newRow.no = rows.length+1;
                 rows.push(newRow);
             }
@@ -135,9 +175,9 @@ export class NewBill extends React.Component {
                     <Col componentClass={ControlLabel} sm={3}><FormControl.Static>Bill Date</FormControl.Static></Col>
                 </FormGroup>
                 <FormGroup>
-                    <Col sm={3}><FormControl type="text" value={this.state.mobile} name='mobile' placeholder="Customer Mobile" onChange={this.handleChange}/> </Col>
-                    <Col sm={4}><FormControl type="text" value={this.state.name} name='name' placeholder="Customer Name" onChange={this.handleChange}/> </Col>
-                    <Col sm={3}><FormControl type="date" value={this.state.date} name='date' placeholder="Bill Date" onChange={this.handleChange}/> </Col>
+                    <Col sm={3}><FormControl type="text" value={this.state.mobile} name='mobile' placeholder="Mobile" onChange={this.handleChange}/> </Col>
+                    <Col sm={4}><FormControl type="text" value={this.state.name} name='name' placeholder="Name" onChange={this.handleChange}/> </Col>
+                    <Col sm={3}><FormControl type="date" value={this.state.date} name='date' placeholder="Date" onChange={this.handleChange}/> </Col>
                 </FormGroup>
             </Form>
             <ReactDataGrid
@@ -187,14 +227,16 @@ export class NewBill extends React.Component {
 const mapStateToProps = (state)=>{
     return {
         allItems: state.retrieveItems.items,
-        itemFetching: state.retrieveItems.fetching
+        itemFetching: state.retrieveItems.fetching,
+        configs: state.retrieveConfigs.configs,
+        configFetching: state.retrieveConfigs.fetching
     }
 }
 
 const mapDispatchToProps = (dispatch) =>{
     return {
-        saveBill: (bill)=>dispatch(execute(USER_ACTIONS.CREATE_BILL, bill));
+        saveBill: (bill)=>dispatch(execute(USER_ACTIONS.CREATE_BILL, null, bill));
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps0;)
+export default connect(mapStateToProps,mapDispatchToProps)(NewBill)
