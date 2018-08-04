@@ -24,7 +24,7 @@ public class BillingVertical extends AbstractDBVertical {
             " where b.BillId=bi.BillId and m.ItemId=bi.ItemId and c.CustomerId=b.CustomerId and b.BillId=?";
 
     @Override
-    public void start() throws Exception {
+    public void start() {
         EventBus eventBus = vertx.eventBus();
 
         eventBus.<JsonObject>consumer(RequestType.CREATE_BILL.name(), message -> {
@@ -50,7 +50,7 @@ public class BillingVertical extends AbstractDBVertical {
                                     JsonObject item = (JsonObject) itemObj;
                                     params.add(new JsonArray()
                                                     .add(billId)
-                                                    .add(item.getInteger("ïtemId"))
+                                                    .add(item.getInteger("itemId"))
                                                     .add(item.getInteger("qty"))
                                                     .add(item.getFloat("price"))
                                                     .add(item.getFloat("gst"))
