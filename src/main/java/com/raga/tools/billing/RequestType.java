@@ -10,5 +10,9 @@ public enum RequestType {
     GET_BILL_BY_ID,
     GET_ALL_ITEMS,
     GET_ALL_CONFIGS,
-    CREATE_CONFIG
+    CREATE_CONFIG,
+    GET_BILL_BY_CRITERIA,
+
+    CREATE_LOGIN,
+    LOGIN_DETAIL
 }
