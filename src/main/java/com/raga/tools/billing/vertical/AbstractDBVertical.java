@@ -108,3 +108,4 @@ public class AbstractDBVertical extends AbstractVerticle {
         void handle(Message message, T result);
     }
 }
+
