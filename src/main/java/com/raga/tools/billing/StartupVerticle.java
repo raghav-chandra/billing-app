@@ -3,9 +3,9 @@ package com.raga.tools.billing;
 import com.raga.tools.billing.service.AdminService;
 import com.raga.tools.billing.service.BillingService;
 import com.raga.tools.billing.service.LoginService;
-import com.raga.tools.billing.vertical.LoginVertical;
 import com.raga.tools.billing.vertical.AdminVertical;
 import com.raga.tools.billing.vertical.BillingVertical;
+import com.raga.tools.billing.vertical.LoginVerticle;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.json.JsonObject;
@@ -58,7 +58,7 @@ public class StartupVerticle extends AbstractVerticle {
         router.post("/billing/admin/addItem").handler(AdminService.addMenuItemHandler());
 
         router.get("/billing/bill/:billId").handler(BillingService.getBillByIdHandler());
-        router.post("/billing/bills/search").handler(BillingService.getBillByCriteriaH());
+        router.post("/billing/bills/search").handler(BillingService.getBillByCriteria());
 
         router.post("/billing/login").handler(LoginService.getUserHandler());
         router.post("/billing/login/create").handler(LoginService.createUserHandler());

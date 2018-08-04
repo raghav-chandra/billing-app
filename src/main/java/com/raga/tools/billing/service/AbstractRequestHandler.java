@@ -17,7 +17,7 @@ public abstract class AbstractRequestHandler<S, T> implements Handler<RoutingCon
     private final String key;
     private final RequestType requestType;
 
-    public AbstractRequestHandler(String key, RequestType requestType) {
+    AbstractRequestHandler(String key, RequestType requestType) {
         this.key = key;
         this.requestType = requestType;
     }
@@ -27,11 +27,22 @@ public abstract class AbstractRequestHandler<S, T> implements Handler<RoutingCon
         HttpServerRequest request = context.request();
         EventBus eventBus = context.vertx().eventBus();
 
-        S requestData = getRequestData(request, context.getBody());
-        JsonObject reqObject = createRequestObject(key, requestData);
+        if(validateRequest(context)) {
+            S requestData = getRequestData(request, context.getBody());
+            JsonObject reqObject = createRequestObject(key, requestData);
 
-        handleFuture(request, requestData, createFuture(requestType, eventBus, reqObject), eventBus);
+            handleFuture(request, requestData, createFuture(requestType, eventBus, reqObject), eventBus);
+        } else {
+            sendValidationFailure(request);
+        }
+    }
 
+    protected void sendValidationFailure(HttpServerRequest request) {
+        onFailure(request,new RuntimeException("Request Validation Failure"));
+    }
+
+    protected boolean validateRequest(RoutingContext context){
+        return true;
     }
 
     protected void handleFuture(HttpServerRequest request, S requestData, Future<T> future, EventBus eventBus) {
@@ -48,7 +59,7 @@ public abstract class AbstractRequestHandler<S, T> implements Handler<RoutingCon
         request.response().end(JsonUtil.createSuccessResponse(result).encodePrettily());
     }
 
-    private void onFailure(HttpServerRequest request, Throwable cause) {
+    void onFailure(HttpServerRequest request, Throwable cause) {
         request.response().end(JsonUtil.createFailedResponse(cause.getMessage()).encodePrettily());
     }
 
