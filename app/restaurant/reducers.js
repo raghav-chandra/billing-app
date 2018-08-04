@@ -53,7 +53,7 @@ function searchBill(state = billSearchInitialState, action) {
 function fetchLogin(state = loginInitialState, action) {
     switch (action.type) {
         case REDUX_ACTIONS.FETCH_LOGIN:
-            return Object.assign((), state, {fetching: action.fetching, login: action.login});
+            return Object.assign({}, state, {fetching: action.fetching, login: action.login});
         default:
             return state;
     }

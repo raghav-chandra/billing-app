@@ -3,12 +3,12 @@ import {connect} from 'react-redux';
 
 import ReactDataGrid from 'react-data-grid';
 import {Toolbar, Editors} from 'react-data-grid-addons';
-import {Form, FormControl, FormGroup, Button, ControlLabel, Col, Row} form 'react-bootstrap';
+import {Form, FormControl, FormGroup, Button, ControlLabel, Col, Row} from 'react-bootstrap';
 
 import moment from 'moment';
 
-import {clone} form '../util/JSUtil';
-import {execute} form '../network';
+import {clone} from '../util/JSUtil';
+import {execute} from '../network';
 import {USER_ACTIONS} from '../constants';
 
 import {getDetails} from '../util/ConfigUtil';
@@ -16,14 +16,14 @@ import {getDetails} from '../util/ConfigUtil';
 const columns = (allItems) =>{
     return [
         {key:'no',name:'#'},
-        {key:'item',name:'Item', editor:<Editors.AutoComplete options={allItems}},
+        {key:'item',name:'Item', editor:<Editors.AutoComplete options={allItems} />},
         {key:'qty', name:'Quantity',editable:true, resizable:true},
         {key:'amount', name:'Amount',editable:true, resizable:true},
         {key:'discount', name:'Discount %',editable:true, resizable:true},
         {key:'gst', name:'GST %',editable:true, resizable:true},
         {key:'gstAmount', name:'GST Amount',editable:false, resizable:true},
         {key:'total', name:'Total',editable:false, resizable:true}
-    ];.
+    ];
 }
 
 const flattenData= (allItems)=>{
@@ -55,7 +55,9 @@ export class NewBill extends React.Component {
         let defaultGST = getDetails(this.props.configs).defaultGST;
         this.state = {
             rows:[initialRow()],
-            date:moment().format('YYYY-MM-DD'),mobile:null,name:null,
+            date:moment().fromat('YYYY-MM-DD'),
+            mobile:null,
+            name:null,
             defaultGST:defaultGST,
             billAmount:0,totalDisc:0,totalGST:0,totalMRP:0,
             priceMap:keyValueMap(this.props.allItems, 'Item','Price'),
@@ -70,7 +72,7 @@ export class NewBill extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.setState({
             priceMap:keyValueMap(nextProps.allItems,'Item','Price'),
-            nameIdMap:keyValueMap(nextProps.allItems, 'Item','ItemId')
+            nameIdMap:keyValueMap(nextProps.allItems, 'Item','ItemId'),
             defaultGST:getDetails(nextProps.configs).defaultGST
         });
     }
@@ -235,7 +237,7 @@ const mapStateToProps = (state)=>{
 
 const mapDispatchToProps = (dispatch) =>{
     return {
-        saveBill: (bill)=>dispatch(execute(USER_ACTIONS.CREATE_BILL, null, bill));
+        saveBill: (bill)=>dispatch(execute(USER_ACTIONS.CREATE_BILL, null, bill))
     }
 }
 
