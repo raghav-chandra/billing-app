@@ -1,18 +1,30 @@
+import {USER ACTIONS} from './constants';
+import {retrieveltems, fetchByld, fetchConfigs, biliModal, searchBill, fetchLogin} from './actions';
+ 
+const HTTP_GET = 'GET'; 
+const HTTP_POSI = 'POST';
+ 
+const CALL MAPPER = {
+    [USER ACTIONS.FETCH ALL ITEMS]: (dispatch, action, param, data) => executeGetRequest(dispatch, 'billing/items/getA11', retrieveltems),
+    [USER ACTIONS. FETCH ALL CONFIGS]: (dispatch, action, param, data) => executeGetRequest(dispatch, 'billing/configs/getA11', fetchConfigs),
+    [USER ACTIONS.CREATE BILL]: (dispatch, action, param, data) => executePostRequest(dispatch, 'billing/bills/create', data, billMbdal),
+    [USER ACTIONS. FETCH BILL BY ID]: (dispatch, action, billId, data) => executeGetRequest(dispatch, 'billing/bill/' + billId, fetchByld),
+    [USER ACTIONS. SEARCH_ BILL]: (dispatch, action, Wind, data) => executePostRequest(dispatch, 'billing/bills/search', data, searchBill),
+    [USER ACTIONS.CREATE_LOGIN]: (dispatch, action, Wand, data) => executePostRequest(dispatch, 'billing/login/create', data, (lo) => {
+        return fetchLogin({});
+    }),
+    [USER ACTIONS.FETCH LOGIN]: (dispatch, action, billId, data) => executePostRequest(dispatch, 'billing/login', data, (details) => {
+        let ld = {};
+        if (details && details.UserP) {
+            let d = new Date();
+            d.setTime(d.getTime() + (24 * 60 * 60 * 1000));
+            let expiry = 'expires=' + d.toUTCString();document.cookie = 'LT=' + details.UserP + ';' + expiry + ';path=/';
+            ld = details;
+        }
 
-
-import {USER_ACTIONS} from './constants';
-import {retrieveItems, fetchById, fetchConfigs} from './action';
-
-const HTTP_GET ='GET';
-const HTTP_POST ='POST';
-
-const CALL_MAPPER= {
-    USER_ACTIONS.FETCH_ALL_ITEMS: (dispatch,action,param,data)=>executeGetRequest(dispatch,'billing/items/getAll',retrieveItems),
-    USER_ACTIONS.FETCH_ALL_CONFIGS: (dispatch,action,param,data)=>executeGetRequest(dispatch,'billing/configs/getAll',fetchConfigs),
-
-    USER_ACTIONS.FETCH_BILL_BY_ID: (dispatch,action,billId,data)=>executeGetRequest(dispatch,'billing/bill/'+billId,fetchById),
-
-    USER_ACTIONS.CREATE_BILL : createBill,
+        return fetchLogin(ld);
+        }),
+    }
 }
 
 export function execute(action, param, data = null) {
@@ -25,10 +37,6 @@ export function execute(action, param, data = null) {
     }
 }
 
-function createBill(dispatch, action, param, data) {
-    return executePostRequest(dispatch, 'billing/bills/create', data, (json)=>console.log(json));
-}
-
 function executePostRequest (dispatch, url, data, successAction) {
     executeRequest(dispatch,url,successAction,HTTP_POST, data);
 }
@@ -37,7 +45,7 @@ function executeGetRequest (dispatch, url, successAction) {
     executeRequest(dispatch,url,retrieveItems, HTTP_GET);
 }
 
-function executeRequest (dispatch, url, requestType,successAction, data) {
+function executeRequest (dispatch, url, requestType,successAction, data = null) {
     const createPromise = (requestType) =>{
         if(requestType === HTTP_GET) {
             fetch(url, {credentials: 'include'})

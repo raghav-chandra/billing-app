@@ -23,3 +23,27 @@ export function fetchById(bill, fetching=false) {
         fetching
     }
 }
+
+export function searchBill(bills, fetching=false) {
+    return {
+        type: REDUX_ACTIONS.SEARCH_BILLS,
+        bills,
+        fetching
+    }
+}
+
+export function billModal(bill, open=false) {
+    return {
+        type: REDUX_ACTIONS.BILL_MODAL,
+        bill,
+        open
+    }
+}
+
+export function fetchLogin(login, fetching=false) {
+    return {
+        type: REDUX_ACTIONS.FETCH_LOGIN,
+        login,
+        fetching
+    }
+}
