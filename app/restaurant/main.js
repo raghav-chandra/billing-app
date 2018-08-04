@@ -23,8 +23,8 @@ export class Restaurant extends React.Component {
         let activeTab = this.state.activeTab;
         let tabContents = []; 
         if (this.props.userInfo.UserId) {
-            tabContents.push(<NavItem eventKey={1} href='t'> New Bill </Navltem>); 
-            tabContents.push(<NavItem eventKey={2} href='t'> Search Bill </Navltem>); 
+            tabContents.push(<NavItem eventKey={1} href='#'> New Bill </NavItem>); 
+            tabContents.push(<NavItem eventKey={2} href='#'> Search Bill </NavItem>); 
             tabContents.push(<NavDropdown eventKey={4} title='Admin' id='nav-dropdown'>
                                 <MenuItem eventKey='3.1'> Add User </MenuItem>
                                 <MenuItem eventKey='3.2'> Report2 </MenuItem>
@@ -56,14 +56,14 @@ export class Restaurant extends React.Component {
                             <Navbar.Toggle></Navbar.Toggle>
                         </Navbar.Header>
                         <Navbar.Collapse>
-                            <Nav bsStyle='pills' activeKey={activeTab} onSelect={this.handleSelect)>
+                            <Nav bsStyle='pills' activeKey={activeTab} onSelect={this.handleSelect}>
                                 {tabCcntents}
                             </Nav>
                             <Nav pullRight>
-                                <Navltem eventKey={5} href='#'> Welcome {this.props.userInfo this.props.userInfo.Name : '')</NavItem>
+                                <NavItem eventKey={5} href='#'> Welcome {this.props.userInfo ? this.props.userInfo.Name : ''}</NavItem>
                             </Nav>
                         </Navbar.Collapse>
-                    </Navbar.Collapse}
+                    </Navbar>
                     <BiliModal/>
                 </div>);
         }

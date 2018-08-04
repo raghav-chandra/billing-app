@@ -2,12 +2,12 @@ package com.raga.tools.billing;
 
 import com.raga.tools.billing.service.AdminService;
 import com.raga.tools.billing.service.BillingService;
-import com.raga.tools.billing.vertical.AbstractDBVertical;
+import com.raga.tools.billing.service.LoginService;
+import com.raga.tools.billing.vertical.LoginVertical;
 import com.raga.tools.billing.vertical.AdminVertical;
 import com.raga.tools.billing.vertical.BillingVertical;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Verticle;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -32,12 +31,13 @@ public class StartupVerticle extends AbstractVerticle {
 
     static {
         VERTICLES.add(BillingVertical.class);
-        VERTICLES.add(BillingVertical.class);
+        VERTICLES.add(AdminVertical.class);
+        VERTICLES.add(LoginVerticle.class);
     }
 
 
     @Override
-    public void start() throws Exception {
+    public void start() {
         JsonObject config = config();
 
         Router router = Router.router(vertx);
@@ -57,9 +57,14 @@ public class StartupVerticle extends AbstractVerticle {
         router.post("/billing/bills/create").handler(BillingService.createBillHandler());
         router.post("/billing/admin/addItem").handler(AdminService.addMenuItemHandler());
 
-        router.get("billing/items/getAll").handler(AdminService.getAllItemsHandler());
-        router.get("billing/bill/:billId").handler(BillingService.getBillByIdHandler());
-        router.get("billing/configs/getAll").handler(AdminService.getAllConfigsHandler());
+        router.get("/billing/bill/:billId").handler(BillingService.getBillByIdHandler());
+        router.post("/billing/bills/search").handler(BillingService.getBillByCriteriaH());
+
+        router.post("/billing/login").handler(LoginService.getUserHandler());
+        router.post("/billing/login/create").handler(LoginService.createUserHandler());
+
+        router.get("/billing/items/getAll").handler(AdminService.getAllItemsHandler());
+        router.get("/billing/configs/getAll").handler(AdminService.getAllConfigsHandler());
 
         router.route().handler(StaticHandler.create(config().getString(WEB_ROOT)));
 

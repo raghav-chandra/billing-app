@@ -5,7 +5,7 @@ import {Provider} from 'react-redux';
 import thunkMiddleware from 'react-thunk';
 import createLogger from 'react-logger';
 
-import restaurantReducer from "./restaurant/reducers";
+import {restaurantReducer} from "./restaurant/reducers";
 import {USER_ACTIONS} from './restaurant/constants';
 import {execute} from './restaurant/network';
 import {Restaurant} from './restaurant/main';

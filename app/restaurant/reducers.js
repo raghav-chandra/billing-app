@@ -1,9 +1,9 @@
 import {combinedReducers} from 'redux';
 import {REDUX_ACTIONS} from './constants';
 
-const itemsInitState= {fetching:true,items:[]};
-const configsInitState= {fetching:true,configs:[]};
-const billInitState= {fetching:true,bill:{}};
+const itemsInitState = {fetching:true,items:[]};
+const configsInitState = {fetching:true,configs:[]};
+const billInitState = {fetching:true,bill:{}};
 
 function retrieveItems (state=itemsInitState, action) {
     switch(action.type) {
@@ -44,20 +44,20 @@ function billModal(state = {bills: null, fetching: true}, action) {
 function searchBill(state = billSearchInitialState, action) {
     switch (action.type) {
         case REDUX_ACTIONS.SEARCH_BILL:
-            return abject.assign({}, state, {fetching: action.fetching, bills: action.bills});
+            return Object.assign({}, state, {fetching: action.fetching, bills: action.bills});
         default:
             return state;
     }
 }
+
 
 function fetchLogin(state = loginInitialState, action) {
     switch (action.type) {
         case REDUX_ACTIONS.FETCH_LOGIN:
-            return Object.assign((), state, {fetching: action.fetching, login: action.login});
+            return Object.assign({}, state, {fetching: action.fetching, login: action.login});
         default:
             return state;
     }
 }
 
-
-export default combinedReducers({retrieveItems,retrieveConfigs,retrieveBillById,billModal,searchBill,fetchLogin});
+export const restaurantReducer = combinedReducers({retrieveItems,retrieveConfigs,retrieveBillById,billModal,searchBill,fetchLogin});

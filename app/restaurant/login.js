@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {Button, FormGroup, ControlLabel, FormControl, Form, Col, Row} from 'react-bootstrap';
 import {sha256} from "./util/SHA256";
 import {execute} from "./network";
-import {USER ACTIONS} from "./constants";
+import {USER_ACTIONS} from "./constants";
 
 export class Login extends React.Component {
     constructor(props){
@@ -38,41 +38,41 @@ export class Login extends React.Component {
         this.props.createLogin(data);
     }
 
-    render() (
-    let isSignUp = this.state.signUp;
-    console log(this.state.signUp);
-    let components = [];
-    let button = <Button bsStyle="primary" onClick={this.handleLsgin}>Login</Button›;
+    render() {
+        let isSignUp = this.state.signUp;
+        let components = [];
+        let button = <Button bsStyle="primary" onClick={this.handleLsgin}>Login</Button>;
 
-    components.push(<Row>
-                        <div align="left"›<Col componentClass=(ControlLabel) sti{6}><ForaControl.Static>trser Id</FormControl.Static></Col></div>
-                        <div align="right">CCol sm={6}><FormControl type="text" value={this.state.userId} name=tuserId1 placeholder="User ID" onChange={this.handleChange}/></Co1></div>
-                    </Row>) ;
-    components.push(<Row>
-                        <div align="left"><Col componentClass={ControlLabel} sm={6}><FormControl.Static>Password</FormControl.Static></Col></div>
-                        <div align="right",<Col sm={6}><FormControl type="password" value={this.state.password} name=ipassword' placeholder="Password" onChange={this.handleChange}/></Co1></div>
-                    </Row>) ;
-    if (isSignUp) {
         components.push(<Row>
-                            <div align="left"><Col componentClass={ControlLabel} sm={6}><FormControl.Static>Confirm Password</FormControl.Static></Col></div>
-                            <div align="right">cCol sn{6}><ForniControl type="password" value={ this. state. cPassword} name='cPassword' placeholder="Confirm Password" onChange={this.handleChange}/></Co1></div>
-                        </Row>);
+                            <div align="left"><Col componentClass={ControlLabel} sm={6}><FormControl.Static>User Id</FormControl.Static></Col></div>
+                            <div align="right"><Col sm={6}><FormControl type="text" value={this.state.userId} name='userId' placeholder="User ID" onChange={this.handleChange} /></Col></div>
+                        </Row>) ;
         components.push(<Row>
-                            <div align="left"><Col componentClass={ControlLabel} sm={6}><FormControl.Static>Name </FormControl.Static></Co1></div>
-                            <div align="right"><Col sm={6}><FormControl type="name" value={this.state.name} name='name' placeholder="Name" onChange={this.handleChange}/></Col></div>
+                            <div align="left"><Col componentClass={ControlLabel} sm={6}><FormControl.Static>Password</FormControl.Static></Col></div>
+                            <div align="right"><Col sm={6}><FormControl type="password" value={this.state.password} name='password' placeholder="Password" onChange={this.handleChange} /></Col></div>
+                        </Row>) ;
+        if (isSignUp) {
+            components.push(<Row>
+                                <div align="left"><Col componentClass={ControlLabel} sm={6}><FormControl.Static>Confirm Password</FormControl.Static></Col></div>
+                                <div align="right"><Col sm={6}><ForniControl type="password" value={this.state.cPassword} name='cPassword' placeholder="Confirm Password" onChange={this.handleChange}/> </Col></div>
+                            </Row>);
+            components.push(<Row>
+                                <div align="left"><Col componentClass={ControlLabel} sm={6}><FormControl.Static>Name </FormControl.Static></Col></div>
+                                <div align="right"><Col sm={6}><FormControl type="name" value={this.state.name} name='name' placeholder="Name" onChange={this.handleChange}/></Col></div>
+                            </Row>);
 
-        button = <Button bsStyle="primary" onClick={this.handleSignUp}>Add</Button>;
-    }
+            button = <Button bsStyle="primary" onClick={this.handleSignUp}>Add</Button>;
+        }
 
-    return (
-        <div align="center">
-            <div style={{width: '500px', border: '12px solid yellow', padding: '20px'}}>
-                <Form>
-                    <FormGroup>{components}</FormGromp>
-                    {button}
-                </Form>
-            </div>
-        </div>);
+        return (
+            <div align="center">
+                <div style={{width: '500px', border: '12px solid yellow', padding: '20px'}}>
+                    <Form>
+                        <FormGroup>{components} </FormGroup>
+                        {button}
+                    </Form>
+                </div>
+            </div>);
     }
  }
 
@@ -84,9 +84,9 @@ const mapStateToProps = (state) =>{
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        login: (data) => dispatch(execute(USER ACTIONS.FETCH_LOGIN, null, data)),
-        createLogin: (data) => dispatch(execute(USER ACTIONS.CREATE_LOGIN, null, data))
+        login: (data) => dispatch(execute(USER_ACTIONS.FETCH_LOGIN, null, data)),
+        createLogin: (data) => dispatch(execute(USER_ACTIONS.CREATE_LOGIN, null, data))
     }
-}:
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

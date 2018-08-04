@@ -1,31 +1,30 @@
-import {USER ACTIONS} from './constants';
+import {USER_ACTIONS} from './constants';
 import {retrieveltems, fetchByld, fetchConfigs, biliModal, searchBill, fetchLogin} from './actions';
  
 const HTTP_GET = 'GET'; 
 const HTTP_POSI = 'POST';
  
-const CALL MAPPER = {
-    [USER ACTIONS.FETCH ALL ITEMS]: (dispatch, action, param, data) => executeGetRequest(dispatch, 'billing/items/getA11', retrieveltems),
-    [USER ACTIONS. FETCH ALL CONFIGS]: (dispatch, action, param, data) => executeGetRequest(dispatch, 'billing/configs/getA11', fetchConfigs),
-    [USER ACTIONS.CREATE BILL]: (dispatch, action, param, data) => executePostRequest(dispatch, 'billing/bills/create', data, billMbdal),
-    [USER ACTIONS. FETCH BILL BY ID]: (dispatch, action, billId, data) => executeGetRequest(dispatch, 'billing/bill/' + billId, fetchByld),
-    [USER ACTIONS. SEARCH_ BILL]: (dispatch, action, Wind, data) => executePostRequest(dispatch, 'billing/bills/search', data, searchBill),
-    [USER ACTIONS.CREATE_LOGIN]: (dispatch, action, Wand, data) => executePostRequest(dispatch, 'billing/login/create', data, (lo) => {
+const CALL_MAPPER = {
+    [USER_ACTIONS.FETCH_ALL_ITEMS]: (dispatch, action, param, data) => executeGetRequest(dispatch, 'billing/items/getA11', retrieveltems),
+    [USER_ACTIONS.FETCH_ALL_CONFIGS]: (dispatch, action, param, data) => executeGetRequest(dispatch, 'billing/configs/getA11', fetchConfigs),
+    [USER_ACTIONS.CREATE_BILL]: (dispatch, action, param, data) => executePostRequest(dispatch, 'billing/bills/create', data, billMbdal),
+    [USER_ACTIONS.FETCH_BILL_BY_ID]: (dispatch, action, billId, data) => executeGetRequest(dispatch, 'billing/bill/' + billId, fetchByld),
+    [USER_ACTIONS.SEARCH_BILL]: (dispatch, action, Wind, data) => executePostRequest(dispatch, 'billing/bills/search', data, searchBill),
+    [USER_ACTIONS.CREATE_LOGIN]: (dispatch, action, Wand, data) => executePostRequest(dispatch, 'billing/login/create', data, (lo) => {
         return fetchLogin({});
     }),
-    [USER ACTIONS.FETCH LOGIN]: (dispatch, action, billId, data) => executePostRequest(dispatch, 'billing/login', data, (details) => {
-        let ld = {};
-        if (details && details.UserP) {
-            let d = new Date();
-            d.setTime(d.getTime() + (24 * 60 * 60 * 1000));
-            let expiry = 'expires=' + d.toUTCString();document.cookie = 'LT=' + details.UserP + ';' + expiry + ';path=/';
-            ld = details;
-        }
+    [USER_ACTIONS.FETCH_LOGIN]: (dispatch, action, billId, data) => executePostRequest(dispatch, 'billing/login', data, (details) => {
+            let ld = {};
+            if (details && details.UserP) {
+                let d = new Date();
+                d.setTime(d.getTime() + (24 * 60 * 60 * 1000));
+                let expiry = 'expires=' + d.toUTCString();document.cookie = 'LT=' + details.UserP + ';' + expiry + ';path=/';
+                ld = details;
+            }
 
-        return fetchLogin(ld);
-        }),
-    }
-}
+            return fetchLogin(ld);
+    }),
+};
 
 export function execute(action, param, data = null) {
     return function (dispatch) {
@@ -53,8 +52,8 @@ function executeRequest (dispatch, url, requestType,successAction, data = null) 
             let req = new Request(url, {
                 method:'POST',
                 credentials:'include',
-                headers: {'Content-Type' : 'application/json'}
-                body: data !=null && typeof data === 'object' ? JSON.stringify(data) :data;
+                headers: {'Content-Type' : 'application/json'},
+                body: data !=null && typeof data === 'object' ? JSON.stringify(data) :data
              });
              return fetch(req);
         }
@@ -68,7 +67,7 @@ function executeRequest (dispatch, url, requestType,successAction, data = null) 
         }
     }).then (json=>{
         if(json.success) {
-            return dispatch successAction(json.data);
+            return dispatch(successAction(json.data));
         } else {
             throw json.message;
         }
