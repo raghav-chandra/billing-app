@@ -60,7 +60,8 @@ public class AbstractDBVertical extends AbstractVerticle {
         });
     }
 
-    void executeBatchUpdate(String sql, List<JsonArray> params, Message message) {
+    void executeBatchUpdate(String sql, List<JsonArray> params, Message message, ResultHandler<List<Integer>> rsHandler) {
+
         getJdbcClient().getConnection(handler -> {
             if (handler.failed()) {
                 message.fail(500, "Failed while connecting to DB: " + handler.cause().getMessage());
@@ -70,7 +71,7 @@ public class AbstractDBVertical extends AbstractVerticle {
                         if(res.failed()) {
                             message.fail(500, "Failed while creati\ng BIll Item : "+res.cause().getMessage());
                         } else {
-                            message.reply(res.result());
+                            rsHandler.handle(message, res.result());
                         }
                     });
                 } catch (Exception e) {
@@ -78,6 +79,9 @@ public class AbstractDBVertical extends AbstractVerticle {
                 }
             }
         });
+    }
+    void executeBatchUpdate(String sql, List<JsonArray> params, Message message) {
+        executeBatchUpdate(sql, params, message, (message1, result) -> message1.reply(result));
     }
 
     void executeGet(String sql, JsonArray params, Message message, ResultHandler<JsonArray> resultHandler) {

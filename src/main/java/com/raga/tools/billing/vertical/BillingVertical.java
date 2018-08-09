@@ -60,54 +60,61 @@ public class BillingVertical extends AbstractDBVertical {
                             }
                         });
                     } catch (Exception e) {
-                        message.fail(500, e.getMessage());))));));
-                        eventBus.<JsonObject>consumer(RequestType.GET_BILL_BY_ID.name(), message -> {
-                            executeGet(GET_BILL_BY_ID_SQL, new JsonArray().add(message.body().getInteger("billId")), message, (message12, rows) ->
+                        message.fail(500, e.getMessage());
+                    }
+                }
+            });
+        });
 
-                                    {
-                                        JsonObject billObj = new JsonObject();
-                                        JsonArray billltems = new JsonArray();
-                                        billObj.put("billItems", billItems);
-                                        rows.forEach(row -> {
-                                            JsonObject item = (JsonObject) row;
-                                            billObj.put("billId", item.getInteger("BillId")).put("customerId", item.getInteger("CustomerId")).put("user", item.getString("UpdatedBy")).put("billDate", item.getString("BillDate")).put("amount", item.getfloat("Amount")).put("mobile", item.getString("Mobile")).put("name", item.getString("Name")).put("address", item.getString("Address"));
-                                            billltems.add(new JsonObject().put("ibmaId", item.getInteger("ItemId")).put("item", item.getString("Item")).put("qty", item.getInteger("Quantity")).put("price", item.getfloat("Price")).put("gst", item.getFloat("GSTPerc")).put("discount", item.getFloat("DiscountPerc")));
-                                        });
-                                        message12.reply(billObj);
-                                    }
+        eventBus.<JsonObject>consumer(RequestType.GET_BILL_BY_ID.name(), message -> {
+            executeGet(GET_BILL_BY_ID_SQL, new JsonArray().add(message.body().getInteger("billId")), message, (message12, rows) -> {
+                        JsonObject billObj = new JsonObject();
+                        JsonArray billItems = new JsonArray();
+                        billObj.put("billItems", billItems);
+                        rows.forEach(row -> {
+                            JsonObject item = (JsonObject) row;
+                            billObj.put("billId", item.getInteger("BillId")).put("customerId", item.getInteger("CustomerId")).put("user", item.getString("UpdatedBy")).put("billDate", item.getString("BillDate")).put("amount", item.getFloat("Amount")).put("mobile", item.getString("Mobile")).put("name", item.getString("Name")).put("address", item.getString("Address"));
+                            billItems.add(new JsonObject().put("itemId", item.getInteger("ItemId")).put("item", item.getString("Item")).put("qty", item.getInteger("Quantity")).put("price", item.getFloat("Price")).put("gst", item.getFloat("GSTPerc")).put("discount", item.getFloat("DiscountPerc")));
+                        });
+                        message12.reply(billObj);
+                    }
 
+            );
+        });
+        eventBus.<JsonObject>consumer(RequestType.GET_BILL_BY_CRITERIA.name(), message -> {
+            JsonObject criteria = message.body().getJsonObject("criteria");
+            StringBuilder sql = new StringBuilder(GET_BILL_BY_CRITERIA_SQL);
+            JsonArray params = new JsonArray();
+            if (criteria.getInteger("billId") != null) {
+                sql.append(CONDITION_BILL_ID);
+                params.add(criteria.getInteger("billId"));
+            }
+            if (criteria.getString("mobile") != null) {
+                sql.append(CONDITION_MOBILE_NO);
+                params.add(criteria.getString("mobile"));
+            }
+            if (criteria.getString("fromDate") != null) {
+                sql.append(CONDITION_BILL_FROM_DATE);
+                params.add(criteria.getString("fromDate"));
+                if (criteria.getString("toDate") != null) {
+                    sql.append(CONDITION_BILL_TO_DATE);
+                    params.add(criteria.getString("toDate"));
+                    executeGet(sql.toString(), params, message, (message13, bills) -> {
+                        JsonArray billsToSend = new JsonArray();
+                        bills.forEach(obj -> {
+                            JsonObject bill = (JsonObject) obj;
+                            billsToSend.add(new JsonObject()
+                                            .put("billId", bill.getInteger("BillId"))
+                                            .put("name", bill.getString("Name"))
+                                            .put("mobile", bill.getString("MobileNo"))
+                                            .put("billDate", bill.getString("BillDate"))
+                                            .put("finalAmount", bill.getFloat("Amount"))
                             );
                         });
-                        eventBus.<JsonObject>consumer(RequestType.GET_BILL_BY_CRITERIA.name(), message -> {
-                            JsonObject criteria = message.body().getJsonObject("criteria");
-                            StringBuilder sql = new StringBuilder(GET_BILL_BY_CRITERIA_SQL);
-                            JsonArray params = new JsonArray();
-                            if (criteria.getInteger("billId") != null) {
-                                sql.append(CONDITION_BILL_ID);
-                                params.add(criteria.getInteger("billId"));
-                            }
-                            if (criteria.getString("mobile") != null) {
-                                sql.append(CONDITION_MOBILE_NO);
-                                params.add(criteria.getString("mobile"));
-                            }
-                            if (criteria.getString("fromDate") != null) {
-                                sql.append(CONDITION_BILL_FROM_DATE);
-                                params.add(criteria.getString("fromDate"));
-                                if (criteria.getString("toDate") != null) {
-                                    sql.append(CONDITION_BILL_TO_DATE);
-                                    params.add(criteria.getString("toDate"));
-                                    executeGet(sql.toString(), params, message, (message13, bills) -> {
-                                        JsonArray billsToSend = new JsonArray();
-                                        bills.forEach(obj -> {
-                                            JsonObject bill = (JsonObject) obj;
-                                            billsToSend.add(new JsonObject()
-                                                            .put("billId", bill.getInteger("BillId"))
-                                                            .put("name", bill.getString("Name"))
-                                                            .put("mobile", bill.getString("MobileNo"))
-                                                            .put("billDate", bill.getString("BillDate"))
-                                                            .put("finalAmount", bill.getFloat("Amount"))
-                                            );
-                                        });
-                                        message13.reply(billsToSend);
-                                    });
-                                });
+                        message13.reply(billsToSend);
+                    });
+                }
+            }
+        });
+    }
+}
