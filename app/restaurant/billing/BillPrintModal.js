@@ -1,9 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux' ;
-import {Modal, Button} from react-bootstrap ;
-Import {billModal} from "../actions";
-import {getDetails} from "../util/ConfigUtil";
-import {keyValueMap} from "../util/JSUtil";
+import {Modal, Button} from 'react-bootstrap' ;
+Import {billModal} from '../actions';
+import {getDetails} from '../util/ConfigUtil';
+import {keyValueMap} from '../util/JSUtil';
 
 class BillModal extends React.Component {
     constructor(props, context) {
@@ -17,9 +17,9 @@ class BillModal extends React.Component {
     }
     
     handlePrint() {
-        let mywindow = window.open(", 'PRINT', 'height=400,width=600');
+        let mywindow = window.open('', 'PRINT', 'height=400,width=600');
         mywindow.document.write('<html><head><title><title></head><body>');
-        mywindow.document.write(document.getElementById('printBillDiv').innerHIML);
+        mywindow.document.write(document.getElementById('printBillDiv').innerHTML);
         mywindow.document.write('</body></html>');
         mywindow.document.close();
         mywindow.focus();
@@ -32,7 +32,7 @@ class BillModal extends React.Component {
             return (<div/>);
         }
 
-        let itemMap = keyValueMap(this.props.items, 'Itemld', 'Item');
+        let itemMap = keyValueMap(this.props.items, 'ItemId', 'Item');
         let config = getDetails(this.props.configs);
         let customer = this.props.bill.customer;
         let custName = customer.name;
@@ -48,9 +48,9 @@ class BillModal extends React.Component {
         billItems.forEach(bItem => {
             let mrpTotal = bItem.qty * bItem.price;
             totalMRP += mrpTotal;
-            let discount = (mrpTotal * bltem.discount) / 100;
+            let discount = (mrpTotal * bItem.discount) / 100;
             totalDisc += discount;
-            let gst = ((mrpTotal - discount) * bltem.gst) / 100;
+            let gst = ((mrpTotal - discount) * bItem.gst) / 100;
             totalGST += gst;
             let totalAmount = (mrpTotal - discount) + gst;
             finalAmount += totalAmount;
@@ -70,26 +70,26 @@ class BillModal extends React.Component {
                     <Modal show={this.props.open} onHide={this.handleClose}>
                         <Modal.Header closeButton><Modal.Title>Modal heading</Modal.Title></Modal.Header>
                         <Modal.Body>
-                            <div id='printBiliDiv' style={{width: 1148mml, height: '210mm', border: 'blue solid'}}>
-                                <div align="center">
+                            <div id='printBillDiv' style={{width: '148mm', height: '210mm', border: 'blue solid'}}>
+                                <div align='center'>
                                     <h3>{config.company}></h3>
                                     <h4>{config.companyAddress1}</h4>
                                     <h4>{config.companyAddress2}</h4>
-                                    <h4>{config.companyLandLine1} {config.companyLandLine2} {config.companyMobilel} {config.companyMobile2}</h4>
+                                    <h4>{config.companyLandLine1} {config.companyLandLine2} {config.companyMobile1} {config.companyMobile2}</h4>
                                     <h4>GSTIN : {config.companyGSTIN}</h4>
                                 </div>
                                 <div>
-                                    <div className="pull-left">
+                                    <div className='pull-left'>
                                         <div>Name : {custName}</div>
                                         <div>Mobile : {mobile}</div>
                                         <div>Mobile : {address}</div>
                                     </div>
-                                    <div className="pull-right">
+                                    <div className='pull-right'>
                                         <div>Invoice No : {billId} </div>
                                         <div>Invoice Date : {date}</div>
                                     </div>
                                     <div>
-                                        <table width="1008" border='lpx solid blue'>
+                                        <table width='100%' border='1px solid blue'>
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
@@ -119,16 +119,16 @@ class BillModal extends React.Component {
 const mapStateToProps = (state) => {
     return {
             open: state.billModal.open,
-            bill: state.BillModal.bill,
+            bill: state.billModal.bill,
             configs: state.retrieveConfigs.configs,
-            items: state.retrieveltems.items,
+            items: state.retrieveItems.items,
             itemsFetching: state.retrieveItems.fetching,
             configFetching: state.retrieveConfigs.fetching
         }
 };
 const mapDispatchToProps = (dispatch) => {
     return {
-        close: () => dispatch(BillModal(null, false))
+        close: () => dispatch(billModal(null, false))
     }
 };
-export default connect(mapStateToProps, mapDispatchToProps)(BillM
+export default connect(mapStateToProps, mapDispatchToProps)(BillModal);

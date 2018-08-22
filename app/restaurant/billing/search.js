@@ -6,17 +6,17 @@ import {execute} from "../network";
 import {USER_ACTIONS} from "../constants";
 import {searchBill} from "../actions";
 const GRID_COLUMNS = [
-    {key: 'Mind', name: 'Invoice NO'},
+    {key: 'billId', name: 'Invoice No'},
     {key: 'mobile', name: 'Mobile'},
-    {key: 'name', name: 'Name', resizable: true),
-    {key: 'biliDate', name: 'Date', resizable: true},
+    {key: 'name', name: 'Name', resizable: true},
+    {key: 'billDate', name: 'Date', resizable: true},
     {key: 'finalAmount', name: 'Amount', resizable: true}
 ];
 
 export class BillSearch extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { fromDate: null, toDate: null, mobile: null, blind: null};
+        this.state = { fromDate: null, toDate: null, mobile: null, billId: null};
         this.handleChange = this.handleChange.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
         this.getRowAt = this.getRowAt.bind(this);
@@ -55,7 +55,7 @@ export class BillSearch extends React.Component {
                     <Col sm={2}><FormControl type="text" value={this.state.mobile} name='mobile' placeholder="Mobile" onChange={this.handleChange}/></Col>
                     <Col sm={3}><FormControl type="date" value={this.state.fromDate} name='fromDate' placeholder="From Date" onChange={this.handleChange}/></Col>
                     <Col sm={3}><FormControl type="date" value={this.state.toDate} name='toDate' placeholder="To Date" onChange={this.handleChange}/></Col>
-                    <Col sn(2)><Button bsStyle="primary" onClick={this.handleSearch}>Search Bill</Button></Col>
+                    <Col sm=(2)><Button bsStyle="primary" onClick={this.handleSearch}>Search Bill</Button></Col>
                 </FormGroup></Form> 
                 
                 <ReactDataGrid columns={GRID_COLUMNS}
@@ -78,7 +78,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         searchBills: (criteria) => {
                 dispatch(searchBill([], true));
-                dispatch(execute(USER_ACTIONS.SEARCH BILL, null, criteria));
+                dispatch(execute(USER_ACTIONS.SEARCH_BILL, null, criteria));
             }
     }
 };

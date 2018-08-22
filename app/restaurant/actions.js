@@ -18,7 +18,7 @@ export function fetchConfigs (configs, fetching=false) {
 
 export function fetchById(bill, fetching=false) {
     return {
-        type: REDUX_ACTIONS.FETCH_ALL_CONFIGS,
+        type: REDUX_ACTIONS.FETCH_BILL_BY_ID,
         bill,
         fetching
     }
@@ -32,7 +32,7 @@ export function searchBill(bills, fetching=false) {
     }
 }
 
-export function billModal(bill, open=false) {
+export function billModal(bill, open=true) {
     return {
         type: REDUX_ACTIONS.BILL_MODAL,
         bill,

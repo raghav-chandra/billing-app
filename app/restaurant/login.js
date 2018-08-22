@@ -9,7 +9,7 @@ import {USER_ACTIONS} from "./constants";
 export class Login extends React.Component {
     constructor(props){
         super(props);
-        this.state = {userld: '', name: '', password: '', cPassword: '', signUp: this.props.addUser};
+        this.state = {userId: '', name: '', password: '', cPassword: '', signUp: this.props.addUser};
         this.handleChange = this.handleChange.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
         this.handleSignUp = this.handleSignUp.bind(this);
@@ -26,7 +26,7 @@ export class Login extends React.Component {
         let pwd = sha256(this.state.password);
         let uid = sha256(this.state.userId);
         let user = sha256(uid + pwd);
-        let data = {user, userld: this.state.userld, password: pwd}
+        let data = {user, userId: this.state.userId, password: pwd}
         this.props.login(data);
     }
 
@@ -34,14 +34,14 @@ export class Login extends React.Component {
         let pwd = sha256(this.state.password);
         let uid = sha256(this.state.userId);
         let user = sha256(uid + pwd);
-        let data = {user, userld: this.state.userld, password: pwd, name: this.state.name, createdBy: this.props.loggedInUser};
+        let data = {user, userId: this.state.userId, password: pwd, name: this.state.name, createdBy: this.props.loggedInUser};
         this.props.createLogin(data);
     }
 
     render() {
         let isSignUp = this.state.signUp;
         let components = [];
-        let button = <Button bsStyle="primary" onClick={this.handleLsgin}>Login</Button>;
+        let button = <Button bsStyle="primary" onClick={this.handleLogin}>Login</Button>;
 
         components.push(<Row>
                             <div align="left"><Col componentClass={ControlLabel} sm={6}><FormControl.Static>User Id</FormControl.Static></Col></div>
@@ -54,7 +54,7 @@ export class Login extends React.Component {
         if (isSignUp) {
             components.push(<Row>
                                 <div align="left"><Col componentClass={ControlLabel} sm={6}><FormControl.Static>Confirm Password</FormControl.Static></Col></div>
-                                <div align="right"><Col sm={6}><ForniControl type="password" value={this.state.cPassword} name='cPassword' placeholder="Confirm Password" onChange={this.handleChange}/> </Col></div>
+                                <div align="right"><Col sm={6}><FormControl type="password" value={this.state.cPassword} name='cPassword' placeholder="Confirm Password" onChange={this.handleChange}/> </Col></div>
                             </Row>);
             components.push(<Row>
                                 <div align="left"><Col componentClass={ControlLabel} sm={6}><FormControl.Static>Name </FormControl.Static></Col></div>
@@ -78,7 +78,7 @@ export class Login extends React.Component {
 
 const mapStateToProps = (state) =>{
     return {
-        loggedlnUser: state.fetchLogin.login.Userld
+        loggedInUser: state.fetchLogin.login.UserId
     }
 };
 

@@ -1,16 +1,16 @@
 import {USER_ACTIONS} from './constants';
-import {retrieveltems, fetchByld, fetchConfigs, biliModal, searchBill, fetchLogin} from './actions';
+import {retrieveItems, fetchById, fetchConfigs, billModal, searchBill, fetchLogin} from './actions';
  
 const HTTP_GET = 'GET'; 
-const HTTP_POSI = 'POST';
+const HTTP_POST = 'POST';
  
 const CALL_MAPPER = {
-    [USER_ACTIONS.FETCH_ALL_ITEMS]: (dispatch, action, param, data) => executeGetRequest(dispatch, 'billing/items/getA11', retrieveltems),
-    [USER_ACTIONS.FETCH_ALL_CONFIGS]: (dispatch, action, param, data) => executeGetRequest(dispatch, 'billing/configs/getA11', fetchConfigs),
-    [USER_ACTIONS.CREATE_BILL]: (dispatch, action, param, data) => executePostRequest(dispatch, 'billing/bills/create', data, billMbdal),
-    [USER_ACTIONS.FETCH_BILL_BY_ID]: (dispatch, action, billId, data) => executeGetRequest(dispatch, 'billing/bill/' + billId, fetchByld),
-    [USER_ACTIONS.SEARCH_BILL]: (dispatch, action, Wind, data) => executePostRequest(dispatch, 'billing/bills/search', data, searchBill),
-    [USER_ACTIONS.CREATE_LOGIN]: (dispatch, action, Wand, data) => executePostRequest(dispatch, 'billing/login/create', data, (lo) => {
+    [USER_ACTIONS.FETCH_ALL_ITEMS]: (dispatch, action, param, data) => executeGetRequest(dispatch, 'billing/items/getAll', retrieveItems),
+    [USER_ACTIONS.FETCH_ALL_CONFIGS]: (dispatch, action, param, data) => executeGetRequest(dispatch, 'billing/configs/getAll', fetchConfigs),
+    [USER_ACTIONS.CREATE_BILL]: (dispatch, action, param, data) => executePostRequest(dispatch, 'billing/bills/create', data, billModal),
+    [USER_ACTIONS.FETCH_BILL_BY_ID]: (dispatch, action, billId, data) => executeGetRequest(dispatch, 'billing/bill/' + billId, fetchById),
+    [USER_ACTIONS.SEARCH_BILL]: (dispatch, action, billId, data) => executePostRequest(dispatch, 'billing/bills/search', data, searchBill),
+    [USER_ACTIONS.CREATE_LOGIN]: (dispatch, action, billId, data) => executePostRequest(dispatch, 'billing/login/create', data, (lo) => {
         return fetchLogin({});
     }),
     [USER_ACTIONS.FETCH_LOGIN]: (dispatch, action, billId, data) => executePostRequest(dispatch, 'billing/login', data, (details) => {
@@ -41,7 +41,7 @@ function executePostRequest (dispatch, url, data, successAction) {
 }
 
 function executeGetRequest (dispatch, url, successAction) {
-    executeRequest(dispatch,url,retrieveItems, HTTP_GET);
+    executeRequest(dispatch,url,successAction, HTTP_GET);
 }
 
 function executeRequest (dispatch, url, requestType,successAction, data = null) {

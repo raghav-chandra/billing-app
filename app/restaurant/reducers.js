@@ -1,11 +1,13 @@
 import {combineReducers} from 'redux';
 import {REDUX_ACTIONS} from './constants';
 
-const itemsInitState = {fetching:true,items:[]};
-const configsInitState = {fetching:true,configs:[]};
-const billInitState = {fetching:true,bill:{}};
+const itemsInitialState = {fetching:true,items:[]};
+const billInitialState = {fetching:true,bill:{}};
+const billSearchInitialState = {fetching: true, bils: []};
+const configsInitialState = {fetching:true,configs:[]};
+const loginInitialState = {fetching:true,login:{}};
 
-function retrieveItems (state=itemsInitState, action) {
+function retrieveItems (state=itemsInitialState, action) {
     switch(action.type) {
         case REDUX_ACTIONS.FETCH_ALL_ITEMS:
             return Object.assign({},state,{fetching:action.fetching,items:action.items});
@@ -14,7 +16,7 @@ function retrieveItems (state=itemsInitState, action) {
     }
 }
 
-function retrieveBillById (state=billInitState, action) {
+function retrieveBillById (state=billInitialState, action) {
     switch(action.type) {
         case REDUX_ACTIONS.FETCH_BILL_BY_ID:
             return Object.assign({},state,{fetching:action.fetching,bill:action.bill});
@@ -23,7 +25,7 @@ function retrieveBillById (state=billInitState, action) {
     }
 }
 
-function retrieveConfigs (state=configsInitState, action) {
+function retrieveConfigs (state=configsInitialState, action) {
     switch(action.type) {
         case REDUX_ACTIONS.FETCH_ALL_CONFIGS:
             return Object.assign({},state,{fetching:action.fetching,configs:action.configs});
