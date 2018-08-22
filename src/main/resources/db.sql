@@ -2,6 +2,7 @@ create table Bills (
     BillId      int not null primary key AUTO_INCREMENT,
     CustomerId  int not null,
     BillDate    date not null,
+    Type        varchar(8) not null,
     UpdatedBy   varchar(50) not null,
     UpdatedAt   timestamp default current_timestamp on update current_timestamp
 )

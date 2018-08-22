@@ -41,7 +41,7 @@
     "redux":"3.7.2",
     "react-redux":"5.0.6",
     "react-thunk": "latest",
-    "react-logger": "latest",
+    "redux-logger": "3.0.6",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-es2017": "^6.24.1",

@@ -1,4 +1,4 @@
-import {combinedReducers} from 'redux';
+import {combineReducers} from 'redux';
 import {REDUX_ACTIONS} from './constants';
 
 const itemsInitState = {fetching:true,items:[]};
@@ -60,4 +60,4 @@ function fetchLogin(state = loginInitialState, action) {
     }
 }
 
-export const restaurantReducer = combinedReducers({retrieveItems,retrieveConfigs,retrieveBillById,billModal,searchBill,fetchLogin});
+export default combineReducers({retrieveItems,retrieveConfigs,retrieveBillById,billModal,searchBill,fetchLogin});

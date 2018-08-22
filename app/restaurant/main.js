@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {Login} from './login';
-import CreateBill from './billing/newBill';
+import CreateBill from './billing/sell';
 
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 
