@@ -22,6 +22,10 @@ public class BillingService {
         return new GetBillHandler();
     }
 
+    public static Handler<RoutingContext> getBillByCriteria() {
+        return new GetBillByCriteriaHandler();
+    }
+
 
     private static class CreateBillHandler extends AbstractRequestHandler<JsonObject, JsonObject> {
         CreateBillHandler() {
@@ -46,15 +50,15 @@ public class BillingService {
             }));
         }
 
-        private Future<JsonObject> createBillFuture(EventBus eventBus, JsonObject cust, JsonObject requestData) {
+        private Future<JsonObject> createBillFuture(EventBus eventBus, JsonObject customer, JsonObject requestData) {
             Future<JsonObject> future = Future.future();
             JsonObject data = new JsonObject()
-                    .put("customerId", cust.getInteger("customerId"))
+                    .put("customerId", customer.getInteger("customerId"))
                     .put("user", requestData.getString("userId"))
                     .put("date", requestData.getString("date"))
                     .put("billAmount", requestData.getFloat("billAmount"))
                     .put("billItems", requestData.getString("billItems"))
-                    .put("customer", cust);
+                    .put("customer", customer);
 
             eventBus.<JsonObject>send(RequestType.CREATE_BILL.name(), data, reply -> {
                 if (reply.succeeded()) {
@@ -76,29 +80,29 @@ public class BillingService {
             String date = bill.getString("date");
             Float amount = bill.getFloat("billAmount");
 
-            boolean custValid = name!=null && !name.trim().isEmpty()
-                    && mobile!=null && !mobile.trim().isEmpty()
-                    && date!=null && !date.trim().isEmpty()
-                    && amount!=null && amount>0;
+            boolean custValid = name != null && !name.trim().isEmpty()
+                    && mobile != null && !mobile.trim().isEmpty()
+                    && date != null && !date.trim().isEmpty()
+                    && amount != null && amount > 0;
 
-            for(Object obj: bill.getJsonArray("billItems")) {
+            for (Object obj : bill.getJsonArray("billItems")) {
                 JsonObject item = (JsonObject) obj;
                 Integer itemId = item.getInteger("itemId");
                 Integer qty = item.getInteger("qty");
                 Float price = item.getFloat("price");
                 Float gst = item.getFloat("gst");
                 Float discount = item.getFloat("discount");
-                if(itemId ==null ||itemId<=0|| qty == null || qty<=0 || price ==null ||price <0 || gst==null || discount == null) {
+                if (itemId == null || itemId <= 0 || qty == null || qty <= 0 || price == null || price < 0 || gst == null || discount == null) {
                     return false;
                 }
             }
 
-            return custValid && bill.getJsonArray("billItems").size()>0;
+            return custValid && bill.getJsonArray("billItems").size() > 0;
         }
 
         @Override
         protected void sendValidationFailure(HttpServerRequest request) {
-            onFailure(request,new RuntimeException("Bill Items/Customer Information is not correct"));
+            onFailure(request, new RuntimeException("Bill Items/Customer Information is not correct"));
         }
     }
 
@@ -112,31 +116,43 @@ public class BillingService {
         protected Integer getRequestData(HttpServerRequest request, Buffer body) {
             return Integer.valueOf(request.getParam("billId"));
         }
+
+        @Override
+        protected boolean validateRequest(RoutingContext context) {
+            String billString = context.request().getParam("billId");
+            try {
+                int billId = Integer.parseInt(billString);
+                return billId > 0;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        @Override
+        protected void sendValidationFailure(HttpServerRequest request) {
+            onFailure(request, new RuntimeException("Bill Id > 0"));
+        }
     }
 
-    public static Handler<RoutingContext> getBillByCriteria() {
-        return new GetByCriteriaHandler ();
-    }
-
-    private static class GetByCriteriaHandler extends AbstractRequestHandler<JsonObject,JsonObject> {
-        GetByCriteriaHandler() {
+    private static class GetBillByCriteriaHandler extends AbstractRequestHandler<JsonObject, JsonObject> {
+        GetBillByCriteriaHandler() {
             super("criteria", RequestType.GET_BILL_BY_CRITERIA);
         }
 
         @Override
         protected JsonObject getRequestData(HttpServerRequest request, Buffer body) {
-            return body==null ? new JsonObject():body.toJsonObject();
+            return body == null ? new JsonObject() : body.toJsonObject();
         }
 
         @Override
         protected boolean validateRequest(RoutingContext context) {
             JsonObject criteria = context.getBodyAsJson();
-            return criteria.getString("billId")!=null || criteria.getString("mobile")!=null || criteria.getString("fromDate")!=null||criteria.getString("toDate")!=null;
+            return criteria.getInteger("billId") != null || criteria.getString("mobile") != null || criteria.getString("fromDate") != null || criteria.getString("toDate") != null;
         }
 
         @Override
         protected void sendValidationFailure(HttpServerRequest request) {
-            onFailure(request,new RuntimeException("please fill at-least 1 criteria"));
+            onFailure(request, new RuntimeException("please fill at-least 1 criteria"));
         }
     }
 }

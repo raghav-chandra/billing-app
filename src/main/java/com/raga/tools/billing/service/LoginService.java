@@ -20,7 +20,7 @@ public class LoginService {
         return new UserHandler(RequestType.LOGIN_DETAIL);
     }
 
-    static class UserHandler extends AbstractRequestHandler<JsonObject,String> {
+    static class UserHandler extends AbstractRequestHandler<JsonObject, String> {
 
         UserHandler(RequestType requestType) {
             super("login", requestType);
@@ -28,7 +28,7 @@ public class LoginService {
 
         @Override
         protected JsonObject getRequestData(HttpServerRequest request, Buffer body) {
-            return body ==null ? new JsonObject():body.toJsonObject();
+            return body == null ? new JsonObject() : body.toJsonObject();
         }
     }
 }

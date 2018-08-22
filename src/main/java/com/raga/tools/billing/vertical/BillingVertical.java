@@ -11,16 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BillingVertical extends AbstractDBVertical {
-    private static final String CREATE_BILL_SQL = "insert into Bills (CustomerId,DpdatedBy, BillDate,Amount) values (?,?,?,?)";
-    private static final String CREATE_BILL_ITEM_SQL = "insert into Billltems (BillId,ItemId,Quantity,Price, GSTPerc,DiscountPerc,UpdatedBy) " + "values (?,?,?,?,?,?,?)";
-    private static final String GET_BILL_BY_ID_SQL = "select b.BillId, b.CustomerId,b.UpdatedBy, b.BillDate, " + "b.UpdatedAt, b.Amount, " + " c.MobileNo,c.Name, c.Address, m.Item,m.Itemld, bi.Quantity,bi.Price,bi.GSTPerc, bi.DiscountPerc " + " from Bills b, Customers c, BillItems bi, MenuItems m " + " where b.BillId=bi.BillId and c.CustomerId=b.CustomerId and m.Itemld=bi.Itemld " + "and and b.Type=1OUT' and bi.Type='OUT b.BillId=?";
-    private static final String GET_BILL_BY_CRITERIA_SQL = "select b.BillId, b.CustomerId,b.UpdatedBy, b.BillDate4o.DpdatedAt,b.Amount,c.MobildNo,c.Name,c.Address " +
+    private static final String CREATE_BILL_SQL = "insert into Bills (CustomerId,UpdatedBy, BillDate,Amount) values (?,?,?,?)";
+    private static final String CREATE_BILL_ITEM_SQL = "insert into BillItems (BillId,ItemId,Quantity,Price, GSTPerc,DiscountPerc,UpdatedBy) " + "values (?,?,?,?,?,?,?)";
+    private static final String GET_BILL_BY_ID_SQL = "select b.BillId, b.CustomerId,b.UpdatedBy, b.BillDate, " + "b.UpdatedAt, b.Amount, " + " c.MobileNo,c.Name, c.Address, m.Item,m.ItemId, bi.Quantity,bi.Price,bi.GSTPerc, bi.DiscountPerc " + " from Bills b, Customers c, BillItems bi, MenuItems m " + " where b.BillId=bi.BillId and c.CustomerId=b.CustomerId and m.ItemId=bi.ItemId " + "and b.Type='OUT' and bi.Type='OUT' and b.BillId=?";
+    private static final String GET_BILL_BY_CRITERIA_SQL = "select b.BillId, b.CustomerId,b.UpdatedBy, b.BillDate, b.UpdatedAt,b.Amount,c.MobileNo,c.Name,c.Address " +
             " from Bills b, Customers c where c.CustomerId=b.CustomerId" +
-            " and b.Type=1OUT ";
-    private static final String CONDITION_BILL_ID = "and b.BillId=?";
-    private static final String CONDITION_MOBILE_NO = "and c.MobileNo=?";
-    private static final String CONDITION_BILL_FROM_DATE = "and b.BillDate>=?";
-    private static final String CONDITION_BILL_TO_DATE = "and b.BillDate<=?";
+            " and b.Type='OUT' ";
+    private static final String CONDITION_BILL_ID = " and b.BillId=? ";
+    private static final String CONDITION_MOBILE_NO = " and c.MobileNo=? ";
+    private static final String CONDITION_BILL_FROM_DATE = " and b.BillDate>=? ";
+    private static final String CONDITION_BILL_TO_DATE = " and b.BillDate<=? ";
 
     @Override
     public void start() {

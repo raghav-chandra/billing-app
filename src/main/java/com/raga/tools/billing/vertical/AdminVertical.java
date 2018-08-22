@@ -9,13 +9,13 @@ import io.vertx.core.json.JsonObject;
  * Created by ragha on 22-04-2018.
  */
 public class AdminVertical extends AbstractDBVertical {
-    private static final String CREATE_ITEM_SQL = "insert into MenuItems (Item,Description,Price,Active,UpdatedBy) value (?,?,?,?,?)";
-    private static final String CREATE_CUSTOMER = "insert into Customers (MobileNo,Name,Address,UpdatedBy) value (?,?,?,?)";
+    private static final String CREATE_ITEM_SQL = "insert into MenuItems (Item,Description,Price,Active,UpdatedBy) values (?,?,?,?,?)";
+    private static final String CREATE_CUSTOMER = "insert into Customers (MobileNo,Name,Address,UpdatedBy) values (?,?,?,?)";
 
     private static final String GET_CUSTOMER = "select CustomerId, MobileNo, Name, Address from Customers where MobileNo=?";
-    private static final String GET_CONFIGS_SQL = "select ConfigGroup,Config,Value from Configurations where Active=='Y'";
+    private static final String GET_CONFIGS_SQL = "select ConfigGroup,Config,Value from Configurations where Active='Y'";
 
-    private static final String GET_ALL_ITEMS = "select ItemId, Item, Description, Price from MenuItems where Active='Y'";
+    private static final String GET_ALL_ITEMS = "select ItemId, Item, Description, Price, Active from MenuItems where Type='OUT'";
 
     @Override
     public void start() throws Exception {
@@ -34,20 +34,20 @@ public class AdminVertical extends AbstractDBVertical {
 
         eventBus.<JsonObject>consumer(RequestType.CREATE_GET_CUSTOMERS.name(), message -> {
             JsonObject cust = message.body().getJsonObject("cust");
-            String mobile = cust.getString("mobile");
+            String mobileNo = cust.getString("mobile");
             String name = cust.getString("name");
             String add = cust.getString("address");
-            String user = cust.getString("user");
-            executeGet(GET_CUSTOMER, new JsonArray().add(mobile), message, (message12, rows) -> {
+            String userId = cust.getString("userId");
+            executeGet(GET_CUSTOMER, new JsonArray().add(mobileNo), message, (message12, rows) -> {
                 if (rows.isEmpty()) {
-                    executeUpdate(CREATE_CUSTOMER, new JsonArray().add(mobile).add(name).add(add).add(user), message12, (message1, id) -> message1.reply(cust.put("customerId", id)));
+                    executeUpdate(CREATE_CUSTOMER, new JsonArray().add(mobileNo).add(name).add(add).add(userId), message12, (message1, id) -> message1.reply(cust.put("customerId", id)));
                 } else {
                     JsonObject customer = rows.getJsonObject(0);
                     message.reply(new JsonObject()
-                                    .put("customerId", customer.getInstant("CustomerId"))
-                                    .put("name", customer.getInstant("Name"))
                                     .put("mobile", customer.getInstant("Mobile"))
+                                    .put("name", customer.getInstant("Name"))
                                     .put("address", customer.getInstant("Address"))
+                                    .put("customerId", customer.getInstant("CustomerId"))
                     );
                 }
             });

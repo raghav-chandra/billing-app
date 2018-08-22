@@ -34,11 +34,7 @@ public class AbstractDBVertical extends AbstractVerticle {
         return jdbcClient;
     }
 
-    void executeUpdate(String sql, JsonArray params, Message message) {
-        executeUpdate(sql, params, message, Message::reply);
-    }
-
-    void executeUpdate(String sql, JsonArray params, Message message, ResultHandler<JsonObject> resultHandler) {
+    void executeUpdate(String sql, JsonArray params, Message message, ResultHandler<Integer> resultHandler) {
         getJdbcClient().getConnection(handler -> {
             if (handler.failed()) {
                 message.fail(500, "Couldn't get DB Connections");
@@ -50,7 +46,7 @@ public class AbstractDBVertical extends AbstractVerticle {
                         if (bill.failed()) {
                             message.fail(500, "Failed while creating item. Please retry");
                         } else {
-                            message.reply(bill.result().getKeys().getInstant(0));
+                            resultHandler.handle(message, bill.result().getKeys().getInteger(0));
                         }
                     });
                 } catch (Exception e) {
@@ -60,18 +56,18 @@ public class AbstractDBVertical extends AbstractVerticle {
         });
     }
 
-    void executeBatchUpdate(String sql, List<JsonArray> params, Message message, ResultHandler<List<Integer>> rsHandler) {
+    void executeBatchUpdate(String sql, List<JsonArray> params, Message message, ResultHandler<List<Integer>> resultHandler) {
 
         getJdbcClient().getConnection(handler -> {
             if (handler.failed()) {
                 message.fail(500, "Failed while connecting to DB: " + handler.cause().getMessage());
             } else {
                 try (SQLConnection connection = handler.result()) {
-                    connection.batchWithParams(sql, params, res -> {
-                        if(res.failed()) {
-                            message.fail(500, "Failed while creati\ng BIll Item : "+res.cause().getMessage());
+                    connection.batchWithParams(sql, params, item -> {
+                        if(item.failed()) {
+                            message.fail(500, "Failed while creati\ng BIll Item : " + item.cause().getMessage());
                         } else {
-                            rsHandler.handle(message, res.result());
+                            resultHandler.handle(message, item.result());
                         }
                     });
                 } catch (Exception e) {

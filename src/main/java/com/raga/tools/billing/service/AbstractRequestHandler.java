@@ -14,6 +14,7 @@ import io.vertx.ext.web.RoutingContext;
  */
 public abstract class AbstractRequestHandler<S, T> implements Handler<RoutingContext> {
 
+    private static final String COOKIE_STRING = "Cookie";
     private final String key;
     private final RequestType requestType;
 
@@ -27,9 +28,10 @@ public abstract class AbstractRequestHandler<S, T> implements Handler<RoutingCon
         HttpServerRequest request = context.request();
         EventBus eventBus = context.vertx().eventBus();
 
-        if(validateRequest(context)) {
+        if (validateRequest(context)) {
             S requestData = getRequestData(request, context.getBody());
-            JsonObject reqObject = createRequestObject(key, requestData);
+            String cookie = context.request().headers().get(COOKIE_STRING);
+            JsonObject reqObject = createRequestObject(key, requestData, cookie);
 
             handleFuture(request, requestData, createFuture(requestType, eventBus, reqObject), eventBus);
         } else {
@@ -38,10 +40,10 @@ public abstract class AbstractRequestHandler<S, T> implements Handler<RoutingCon
     }
 
     protected void sendValidationFailure(HttpServerRequest request) {
-        onFailure(request,new RuntimeException("Request Validation Failure"));
+        onFailure(request, new RuntimeException("Request Validation Failure"));
     }
 
-    protected boolean validateRequest(RoutingContext context){
+    protected boolean validateRequest(RoutingContext context) {
         return true;
     }
 
@@ -75,8 +77,8 @@ public abstract class AbstractRequestHandler<S, T> implements Handler<RoutingCon
         return future;
     }
 
-    protected JsonObject createRequestObject(String key, S requestData) {
-        return new JsonObject().put(key, requestData);
+    protected JsonObject createRequestObject(String key, S requestData, String cookie) {
+        return new JsonObject().put(key, requestData).put(COOKIE_STRING, cookie);
     }
 
     protected abstract S getRequestData(HttpServerRequest request, Buffer body);

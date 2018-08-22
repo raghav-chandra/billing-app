@@ -6,7 +6,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 public class LoginVerticle extends AbstractDBVertical {
-    private static final String CREATE_LOGIN_SQL = "insert into LoginDetails (Userld,Name, Password, UserP,CreatedBy) values (?,?,?,?,?)";
+    private static final String CREATE_LOGIN_SQL = "insert into LoginDetails (UserId,Name, Password, UserP,CreatedBy) values (?,?,?,?,?)";
     private static final String GET_LOGIN_SQL = "select * from LoginDetails where UserP=?";
 
     @Override

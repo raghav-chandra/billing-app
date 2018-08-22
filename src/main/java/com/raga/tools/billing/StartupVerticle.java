@@ -62,7 +62,7 @@ public class StartupVerticle extends AbstractVerticle {
 
         router.get("/billing/items/getAll").handler(AdminService.getAllItemsHandler());
         router.get("/billing/configs/getAll").handler(AdminService.getAllConfigsHandler());
-        
+
         router.post("/billing/login").handler(LoginService.getUserHandler());
         router.post("/billing/login/create").handler(LoginService.createUserHandler());
 
