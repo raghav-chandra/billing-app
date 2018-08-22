@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import Login from './login';
-import CreateBill from './billing/newBill';
+import CreateBill from './billing/sell';
 import CreatePurchase from './billing/purchase';
 import BillModal from './billing/BillPrintModal';
 import BillSearch from './billing/search';
