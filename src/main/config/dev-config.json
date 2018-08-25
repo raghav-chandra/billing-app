@@ -1,5 +1,9 @@
 {
   "hostname": "localhost",
   "web.port": 5600,
-  "web.root": "dist"
+  "web.root": "dist",
+  "db.url": "",
+  "db.user": "root",
+  "db.password": "root",
+  "db.driver": ""
 }
