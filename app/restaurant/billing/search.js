@@ -40,7 +40,7 @@ export class BillSearch extends React.Component {
     }
     
     getRowAt(index) {
-        if (index < 0 II index > this.props.bills.length) {
+        if (index < 0 || index > this.props.bills.length) {
             return undefined;
         }
         return this.props.bills[index];
@@ -55,7 +55,7 @@ export class BillSearch extends React.Component {
                     <Col sm={2}><FormControl type="text" value={this.state.mobile} name='mobile' placeholder="Mobile" onChange={this.handleChange}/></Col>
                     <Col sm={3}><FormControl type="date" value={this.state.fromDate} name='fromDate' placeholder="From Date" onChange={this.handleChange}/></Col>
                     <Col sm={3}><FormControl type="date" value={this.state.toDate} name='toDate' placeholder="To Date" onChange={this.handleChange}/></Col>
-                    <Col sm=(2)><Button bsStyle="primary" onClick={this.handleSearch}>Search Bill</Button></Col>
+                    <Col sm={2}><Button bsStyle="primary" onClick={this.handleSearch}>Search Bill</Button></Col>
                 </FormGroup></Form> 
                 
                 <ReactDataGrid columns={GRID_COLUMNS}

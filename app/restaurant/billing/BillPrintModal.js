@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux' ;
 import {Modal, Button} from 'react-bootstrap' ;
-Import {billModal} from '../actions';
+import {billModal} from '../actions';
 import {getDetails} from '../util/ConfigUtil';
 import {keyValueMap} from '../util/JSUtil';
 
