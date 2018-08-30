@@ -63,12 +63,12 @@ export class Restaurant extends React.Component {
                             <Navbar.Toggle></Navbar.Toggle>
                         </Navbar.Header>
                         <Navbar.Collapse>
-                            <Nav bsStyle='pills' activeKey={activeTab} onSelect={this.handleSelect}>{tabCcntents}</Nav>
+                            <Nav bsStyle='pills' activeKey={activeTab} onSelect={this.handleSelect}>{tabContents}</Nav>
                             <Nav pullRight><NavItem eventKey={5} href='#'> Welcome {this.props.userInfo ? this.props.userInfo.Name : ''}</NavItem></Nav>
                         </Navbar.Collapse>
                     </Navbar>
                     {component}
-                    <BiliModal/>
+                    <BillModal/>
                 </div>);
         }
     }
