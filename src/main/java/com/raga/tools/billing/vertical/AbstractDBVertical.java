@@ -34,6 +34,10 @@ public class AbstractDBVertical extends AbstractVerticle {
         return jdbcClient;
     }
 
+    void executeUpdate(String sql, JsonArray params, Message message) {
+        executeUpdate(sql, params, message, Message::reply);
+    }
+
     void executeUpdate(String sql, JsonArray params, Message message, ResultHandler<Integer> resultHandler) {
         getJdbcClient().getConnection(handler -> {
             if (handler.failed()) {
