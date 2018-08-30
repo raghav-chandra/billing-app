@@ -57,7 +57,7 @@ public class BillingService {
                     .put("user", requestData.getString("userId"))
                     .put("date", requestData.getString("date"))
                     .put("billAmount", requestData.getFloat("billAmount"))
-                    .put("billItems", requestData.getString("billItems"))
+                    .put("billItems", requestData.getJsonArray("billItems"))
                     .put("customer", customer);
 
             eventBus.<JsonObject>send(RequestType.CREATE_BILL.name(), data, reply -> {
@@ -83,7 +83,7 @@ public class BillingService {
             boolean custValid = name != null && !name.trim().isEmpty()
                     && mobile != null && !mobile.trim().isEmpty()
                     && date != null && !date.trim().isEmpty()
-                    && amount != null && amount > 0;
+                    && amount != null && amount >= 0;
 
             for (Object obj : bill.getJsonArray("billItems")) {
                 JsonObject item = (JsonObject) obj;

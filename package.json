@@ -32,14 +32,14 @@
     "react-router-dom": "4.3.1",
     "react-bootstrap": "^0.31.3",
     "react-dom": "^16.0.0",
-    "moment":"2.22.2",
+    "moment": "2.22.2",
     "react-transition-group": "^2.2.1",
     "react-data-grid": "4.0.7",
     "react-data-grid-addons": "4.0.8"
   },
   "devDependencies": {
-    "redux":"3.7.2",
-    "react-redux":"5.0.6",
+    "redux": "3.7.2",
+    "react-redux": "5.0.6",
     "redux-thunk": "latest",
     "redux-logger": "3.0.6",
     "babel-core": "^6.26.0",

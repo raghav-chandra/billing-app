@@ -11,7 +11,7 @@ export function getDetails (configs) {
             config.companyMobile2 = conf.ConfigGroup === 'FIRM' && conf.Config === 'MOBILE2' ? conf.Value:config.companyMobile2;
 
             config.companyGSTIN = conf.ConfigGroup === 'FIRM' && conf.Config === 'GSTIN' ? conf.Value:config.companyGSTIN;
-            config.defaultGST = conf.ConfigGroup === 'FIRM' && conf.Config === 'DEFAULT_GST' ? conf.Value:config.defaultGST;
+            config.defaultGST = conf.ConfigGroup === 'FIRM' && conf.Config === 'DEFAULT_GST' ? parseFloat(conf.Value) : config.defaultGST;
         });
     }
     return config;

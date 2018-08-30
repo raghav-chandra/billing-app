@@ -44,10 +44,10 @@ public class AdminVertical extends AbstractDBVertical {
                 } else {
                     JsonObject customer = rows.getJsonObject(0);
                     message.reply(new JsonObject()
-                                    .put("mobile", customer.getInstant("Mobile"))
-                                    .put("name", customer.getInstant("Name"))
-                                    .put("address", customer.getInstant("Address"))
-                                    .put("customerId", customer.getInstant("CustomerId"))
+                                    .put("mobile", customer.getString("MobileNo"))
+                                    .put("name", customer.getString("Name"))
+                                    .put("address", customer.getString("Address"))
+                                    .put("customerId", customer.getInteger("CustomerId"))
                     );
                 }
             });

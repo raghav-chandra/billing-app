@@ -18,7 +18,8 @@ const CALL_MAPPER = {
             if (details && details.UserP) {
                 let d = new Date();
                 d.setTime(d.getTime() + (24 * 60 * 60 * 1000));
-                let expiry = 'expires=' + d.toUTCString();document.cookie = 'LT=' + details.UserP + ';' + expiry + ';path=/';
+                let expiry = 'expires=' + d.toUTCString();
+                document.cookie = 'LT=' + details.UserP + ';' + expiry + ';path=/';
                 ld = details;
             }
 
@@ -31,7 +32,7 @@ export function execute(action, param, data = null) {
         try {
             return CALL_MAPPER[action](dispatch, action, param, data);
         } catch (e) {
-            alert ('Failed while ' + action + '. Please retry');
+            alert ('Failed while ' + action + '. Please retry' +  e);
         }
     }
 }
@@ -44,7 +45,7 @@ function executeGetRequest (dispatch, url, successAction) {
     executeRequest(dispatch,url,successAction, HTTP_GET);
 }
 
-function executeRequest (dispatch, url, requestType,successAction, data = null) {
+function executeRequest (dispatch, url, successAction, requestType, data = null) {
     const createPromise = (requestType) =>{
         if(requestType === HTTP_GET) {
             fetch(url, {credentials: 'include'})

@@ -24,9 +24,9 @@ export class Restaurant extends React.Component {
         if (this.props.userFetching) {
             return (<div>Loading logged in user information</div>)
         }
-        let activeTab = this.state.activeTab;
+        let activeTab === this.state.activeTab;
         let tabContents = []; 
-        if (this.props.userInfo.UserId) {
+        if (this.props.userInfo && this.props.userInfo.UserId) {
             tabContents.push(<NavItem eventKey={1} href='#'> New Bill </NavItem>); 
             tabContents.push(<NavItem eventKey={2} href='#'> Search Bill </NavItem>); 
             tabContents.push(<NavItem eventKey={5} href='#'> Purchase </NavItem>);
@@ -37,22 +37,22 @@ export class Restaurant extends React.Component {
                             </NavDropdown>);
         }
         else {
-            activeTab = 0;
+            activeTab === 0;
             tabContents.push(<NavItem eventKey={0} href='#'> Login </NavItem>);
         }
 
         let component = <Login addUser={false}/>;
-        if (activeTab = 1) {
+        if (activeTab === 1) {
             component = <CreateBill/>;
-        } else if (activeTab = 2) {
+        } else if (activeTab === 2) {
             component = <BillSearch/>;
-        } else if (activeTab = '3.1') {
+        } else if (activeTab === '3.1') {
             component = <Login addUser={true}/>;
-        } else if (activeTab = '3.2') {
+        } else if (activeTab === '3.2') {
             component = <Report/>;
-        } else if (activeTab = '4.1') {
+        } else if (activeTab === '4.1') {
             component = <MenuItem/>;
-        } else if (activeTab = 5) {
+        } else if (activeTab === 5) {
             component = <CreatePurchase/>;
         }
 

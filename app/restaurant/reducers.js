@@ -3,7 +3,7 @@ import {REDUX_ACTIONS} from './constants';
 
 const itemsInitialState = {fetching:true,items:[]};
 const billInitialState = {fetching:true,bill:{}};
-const billSearchInitialState = {fetching: true, bils: []};
+const billSearchInitialState = {fetching: true, bills: []};
 const configsInitialState = {fetching:true,configs:[]};
 const loginInitialState = {fetching:true,login:{}};
 

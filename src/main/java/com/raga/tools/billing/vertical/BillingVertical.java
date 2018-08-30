@@ -43,6 +43,7 @@ public class BillingVertical extends AbstractDBVertical {
                                 message.fail(500, "Failed while creating bill. Please retry");
                             } else {
                                 int billId = bill.result().getKeys().getInteger(0);
+                                billObj.put("billId", billId);
                                 List<JsonArray> params = new ArrayList<JsonArray>();
                                 billItems.forEach(itemObj -> {
                                     JsonObject item = (JsonObject) itemObj;

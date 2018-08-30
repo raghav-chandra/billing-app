@@ -7,7 +7,7 @@ import {Form, FormControl, FormGroup, Button, ControlLabel, Col, Row} from 'reac
 
 import moment from 'moment';
 
-import {clone} from '../util/JSUtil';
+import {clone, keyValueMap} from '../util/JSUtil';
 import {execute} from '../network';
 import {USER_ACTIONS} from '../constants';
 
@@ -29,16 +29,10 @@ const columns = (allItems) =>{
 const flattenData= (allItems)=>{
     let data = [];
     allItems.forEach(item=>{
-        let row = {id:item.ItemId, title:item.Item};
-        data.push(row);
-    });
-    return data;
-}
-
-const keyValueMap = (allItems, key, value) =>{
-    let data = {};
-    allItems.forEach(item=>{
-        data[item[key]] = item[value];
+        if(item.Active === 'Y') {
+            let row = {id:item.ItemId, title:item.Item};
+            data.push(row);
+        }
     });
     return data;
 }
@@ -54,11 +48,11 @@ export class NewBill extends React.Component {
         super(props);
         let defaultGST = getDetails(this.props.configs).defaultGST;
         this.state = {
-            rows:[initialRow()],
+            rows:[],
             date:moment().fromat('YYYY-MM-DD'),
             mobile:null,
             name:null,
-            defaultGST:defaultGST,
+            defaultGST:defaultGST ? defaultGST : 0,
             billAmount:0,totalDisc:0,totalGST:0,totalMRP:0,
             priceMap:keyValueMap(this.props.allItems, 'Item','Price'),
             nameIdMap:keyValueMap(this.props.allItems, 'Item','ItemId')
@@ -70,10 +64,16 @@ export class NewBill extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        let rows = this.state.rows;
+        let gst = getDetails(nextProps.configs).defaultGST;
+        if(!rows.length && gst) {
+            ros.push(initialRow(gst));
+        }
         this.setState({
             priceMap:keyValueMap(nextProps.allItems,'Item','Price'),
             nameIdMap:keyValueMap(nextProps.allItems, 'Item','ItemId'),
-            defaultGST:getDetails(nextProps.configs).defaultGST
+            defaultGST:getDetails(nextProps.configs).defaultGST,
+            rows : rows
         });
     }
 
@@ -81,6 +81,7 @@ export class NewBill extends React.Component {
         e.preventDefault();
         let bill = {};
         bill.billItems = [];
+        let valid = this.state.mobile && this.state.mobile.length === 10;
         this.state.rows.forEach(row=>{
             let itemId = this.state.nameIdMap[row.item];
             if(!itemId){
@@ -88,23 +89,30 @@ export class NewBill extends React.Component {
                 return;
             }
 
-            let data = {
-                itemId:itemId,
-                qty: parseInt(row.qty),
-                price: parseFloat(row.price),
-                gst: parseFloat(row.gst),
-                discount: parseFloat(row.discount)
+            if(row.qty && row.amount) {
+                let data = {
+                    itemId,
+                    qty : parseInt(row.qty),
+                    price : parseFloat(row.amount),
+                    gst : parseFloat(row.gst),
+                    discount : parseFloat(row.discount)
+                };
+                bill.billItems.push(data);
+                valid = true;
             }
-            bill.billItems.push(data);
         });
 
-        blll.user = 'raghav';
-        blll.address = 'Online';
-        blll.name = this.state.name;
-        blll.mobile = this.state.mobile;
-        blll.date = this.state.date;
-
-        this.props.saveBill(bill);
+        if(valid) {
+            bill.user = this.props.userId;
+            bill.address = 'Online';
+            bill.mobile = this.state.mobile;
+            bill.name = this.state.name;
+            bill.date = this.state.date;
+            bill.billAmount = Number (this.state.billAmount);
+            this.props.saveBill(bill);
+        } else {
+            alert('Entry is invalid, PLease fill Mobil and Bill Items correctly');
+        }
     }
 
     handleGridRowUpdate(context) {
@@ -165,7 +173,7 @@ export class NewBill extends React.Component {
     }
 
     render() {
-        if(this.props.isFetching) {
+        if(this.props.itemFetching || this.props.configFetching) {
             return (<div> Loading</div>)
         }
         
@@ -231,7 +239,8 @@ const mapStateToProps = (state)=>{
         allItems: state.retrieveItems.items,
         itemFetching: state.retrieveItems.fetching,
         configs: state.retrieveConfigs.configs,
-        configFetching: state.retrieveConfigs.fetching
+        configFetching: state.retrieveConfigs.fetching,
+        userId: state.fetchLogin.login.UserId
     }
 }
 
