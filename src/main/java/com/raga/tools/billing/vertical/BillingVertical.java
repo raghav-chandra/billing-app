@@ -11,12 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BillingVertical extends AbstractDBVertical {
-    private static final String CREATE_BILL_SQL = "insert into Bills (CustomerId,UpdatedBy, BillDate,Amount) values (?,?,?,?)";
+    private static final String CREATE_BILL_SQL = "insert into Bills (CustomerId,UpdatedBy, BillDate,Amount, Type) values (?,?,?,?,?)";
     private static final String CREATE_BILL_ITEM_SQL = "insert into BillItems (BillId,ItemId,Quantity,Price, GSTPerc,DiscountPerc,UpdatedBy) " + "values (?,?,?,?,?,?,?)";
-    private static final String GET_BILL_BY_ID_SQL = "select b.BillId, b.CustomerId,b.UpdatedBy, b.BillDate, " + "b.UpdatedAt, b.Amount, " + " c.MobileNo,c.Name, c.Address, m.Item,m.ItemId, bi.Quantity,bi.Price,bi.GSTPerc, bi.DiscountPerc " + " from Bills b, Customers c, BillItems bi, MenuItems m " + " where b.BillId=bi.BillId and c.CustomerId=b.CustomerId and m.ItemId=bi.ItemId " + "and b.Type='OUT' and bi.Type='OUT' and b.BillId=?";
-    private static final String GET_BILL_BY_CRITERIA_SQL = "select b.BillId, b.CustomerId,b.UpdatedBy, b.BillDate, b.UpdatedAt,b.Amount,c.MobileNo,c.Name,c.Address " +
-            " from Bills b, Customers c where c.CustomerId=b.CustomerId" +
-            " and b.Type='OUT' ";
+    private static final String GET_BILL_BY_ID_SQL = "select b.BillId, b.CustomerId,b.UpdatedBy, b.BillDate, " + "b.UpdatedAt, b.Amount, b.Type," + " c.MobileNo,c.Name, c.Address, m.Item,m.ItemId, bi.Quantity,bi.Price,bi.GSTPerc, bi.DiscountPerc " + " from Bills b, Customers c, BillItems bi, MenuItems m " + " where b.BillId=bi.BillId and c.CustomerId=b.CustomerId and m.ItemId=bi.ItemId " + "and b.Type='SELL' and bi.Type='SELL' and b.BillId=?";
+    private static final String GET_BILL_BY_CRITERIA_SQL = "select b.BillId, b.CustomerId,b.UpdatedBy, b.BillDate, b.UpdatedAt,b.Amount,b.Type, c.MobileNo,c.Name,c.Address " +
+            " from Bills b, Customers c where c.CustomerId=b.CustomerId";
     private static final String CONDITION_BILL_ID = " and b.BillId=? ";
     private static final String CONDITION_MOBILE_NO = " and c.MobileNo=? ";
     private static final String CONDITION_BILL_FROM_DATE = " and b.BillDate>=? ";
@@ -37,8 +36,9 @@ public class BillingVertical extends AbstractDBVertical {
                         int customerId = billObj.getInteger("customerId");
                         String date = billObj.getString("date");
                         float billAmount = billObj.getFloat("billAmount");
+                        String type = billObj.getString("type");
                         JsonArray billItems = billObj.getJsonArray("billItems");
-                        conn.updateWithParams(CREATE_BILL_SQL, new JsonArray().add(customerId).add(user).add(date).add(billAmount), bill -> {
+                        conn.updateWithParams(CREATE_BILL_SQL, new JsonArray().add(customerId).add(user).add(date).add(billAmount).add(type), bill -> {
                             if (bill.failed()) {
                                 message.fail(500, "Failed while creating bill. Please retry");
                             } else {
@@ -74,7 +74,7 @@ public class BillingVertical extends AbstractDBVertical {
                         billObj.put("billItems", billItems);
                         rows.forEach(row -> {
                             JsonObject item = (JsonObject) row;
-                            billObj.put("billId", item.getInteger("BillId")).put("customerId", item.getInteger("CustomerId")).put("user", item.getString("UpdatedBy")).put("billDate", item.getString("BillDate")).put("amount", item.getFloat("Amount")).put("mobile", item.getString("Mobile")).put("name", item.getString("Name")).put("address", item.getString("Address"));
+                            billObj.put("billId", item.getInteger("BillId")).put("type",item.getString("Type")).put("customerId", item.getInteger("CustomerId")).put("user", item.getString("UpdatedBy")).put("billDate", item.getString("BillDate")).put("amount", item.getFloat("Amount")).put("mobile", item.getString("Mobile")).put("name", item.getString("Name")).put("address", item.getString("Address"));
                             billItems.add(new JsonObject().put("itemId", item.getInteger("ItemId")).put("item", item.getString("Item")).put("qty", item.getInteger("Quantity")).put("price", item.getFloat("Price")).put("gst", item.getFloat("GSTPerc")).put("discount", item.getFloat("DiscountPerc")));
                         });
                         message12.reply(billObj);
@@ -110,6 +110,7 @@ public class BillingVertical extends AbstractDBVertical {
                                             .put("mobile", bill.getString("MobileNo"))
                                             .put("billDate", bill.getString("BillDate"))
                                             .put("finalAmount", bill.getFloat("Amount"))
+                                            .put("sellPurchase", bill.getFloat("Type"))
                             );
                         });
                         message13.reply(billsToSend);

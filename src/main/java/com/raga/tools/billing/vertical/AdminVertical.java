@@ -10,9 +10,9 @@ import io.vertx.core.json.JsonObject;
  */
 public class AdminVertical extends AbstractDBVertical {
     private static final String CREATE_ITEM_SQL = "insert into MenuItems (Item,Description,Price,Active,UpdatedBy) values (?,?,?,?,?)";
-    private static final String CREATE_CUSTOMER = "insert into Customers (MobileNo,Name,Address,UpdatedBy) values (?,?,?,?)";
+    private static final String CREATE_CUSTOMER = "insert into Customers (MobileNo,Name,Address,UpdatedBy, Type) values (?,?,?,?,?)";
 
-    private static final String GET_CUSTOMER = "select CustomerId, MobileNo, Name, Address from Customers where MobileNo=?";
+    private static final String GET_CUSTOMER = "select CustomerId, MobileNo, Name, Address,Type from Customers where MobileNo=? and Type=?";
     private static final String GET_CONFIGS_SQL = "select ConfigGroup,Config,Value from Configurations where Active='Y'";
 
     private static final String GET_ALL_ITEMS = "select ItemId, Item, Description, Price, Active from MenuItems where Type='OUT'";
@@ -38,9 +38,10 @@ public class AdminVertical extends AbstractDBVertical {
             String name = cust.getString("name");
             String add = cust.getString("address");
             String userId = cust.getString("userId");
-            executeGet(GET_CUSTOMER, new JsonArray().add(mobileNo), message, (message12, rows) -> {
+            String type = cust.getString("type");
+            executeGet(GET_CUSTOMER, new JsonArray().add(mobileNo).add(type), message, (message12, rows) -> {
                 if (rows.isEmpty()) {
-                    executeUpdate(CREATE_CUSTOMER, new JsonArray().add(mobileNo).add(name).add(add).add(userId), message12, (message1, id) -> message1.reply(cust.put("customerId", id)));
+                    executeUpdate(CREATE_CUSTOMER, new JsonArray().add(mobileNo).add(name).add(add).add(userId).add(type), message12, (message1, id) -> message1.reply(cust.put("customerId", id)));
                 } else {
                     JsonObject customer = rows.getJsonObject(0);
                     message.reply(new JsonObject()
@@ -48,6 +49,7 @@ public class AdminVertical extends AbstractDBVertical {
                                     .put("name", customer.getString("Name"))
                                     .put("address", customer.getString("Address"))
                                     .put("customerId", customer.getInteger("CustomerId"))
+                                    .put("type", type)
                     );
                 }
             });

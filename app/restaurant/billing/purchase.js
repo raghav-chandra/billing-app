@@ -7,7 +7,7 @@ import {Form, FormControl, FormGroup, Button, ControlLabel, Col, Row} from 'reac
 
 import moment from 'moment';
 
-import {clone} from '../util/JSUtil';
+import {clone, keyValueMap} from '../util/JSUtil';
 import {execute} from '../network';
 import {USER_ACTIONS} from '../constants';
 
@@ -31,14 +31,6 @@ const flattenData= (allItems)=>{
     allItems.forEach(item=>{
         let row = {id:item.ItemId, title:item.Item};
         data.push(row);
-    });
-    return data;
-}
-
-const keyValueMap = (allItems, key, value) =>{
-    let data = {};
-    allItems.forEach(item=>{
-        data[item[key]] = item[value];
     });
     return data;
 }

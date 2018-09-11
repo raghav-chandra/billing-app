@@ -56,6 +56,7 @@ public class BillingService {
                     .put("customerId", customer.getInteger("customerId"))
                     .put("user", requestData.getString("userId"))
                     .put("date", requestData.getString("date"))
+                    .put("type", requestData.getString("type"))
                     .put("billAmount", requestData.getFloat("billAmount"))
                     .put("billItems", requestData.getJsonArray("billItems"))
                     .put("customer", customer);

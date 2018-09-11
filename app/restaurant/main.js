@@ -24,7 +24,7 @@ export class Restaurant extends React.Component {
         if (this.props.userFetching) {
             return (<div>Loading logged in user information</div>)
         }
-        let activeTab === this.state.activeTab;
+        let activeTab = this.state.activeTab;
         let tabContents = []; 
         if (this.props.userInfo && this.props.userInfo.UserId) {
             tabContents.push(<NavItem eventKey={1} href='#'> New Bill </NavItem>); 

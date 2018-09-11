@@ -28,7 +28,7 @@ public class LoginService {
 
         @Override
         protected JsonObject getRequestData(HttpServerRequest request, Buffer body) {
-            return body == null ? new JsonObject() : body.toJsonObject();
+            return body == null || body.toString().isEmpty() ? new JsonObject() : body.toJsonObject();
         }
     }
 }
