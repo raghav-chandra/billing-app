@@ -6,7 +6,7 @@ export const clone = (data) =>{
 export const keyValueMap = (allItems, key, value) => {
     let data = {};
     allItems.forEach(item=>{
-        data[item[key]] = data[value];
+        data[item[key]] = item[value];
     });
     return data;
 }

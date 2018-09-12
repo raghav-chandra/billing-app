@@ -29,8 +29,10 @@ const columns = (allItems) =>{
 const flattenData= (allItems)=>{
     let data = [];
     allItems.forEach(item=>{
-        let row = {id:item.ItemId, title:item.Item};
-        data.push(row);
+        if(item.Active === 'Y') {
+            let row = {id:item.ItemId, title:item.Item};
+            data.push(row);
+        }
     });
     return data;
 }
@@ -41,31 +43,32 @@ const initialRow = (defaultGST) => {
     return {no:1, item:'', qty:0, amount:0, discount:0, gst:defaultGST, total:0,gstAmount:0,totalMRP:0,totalDisc:0}
 }
 
-export class NewBill extends React.Component {
+export class CreatePurchase extends React.Component {
     constructor(props) {
         super(props);
-        let defaultGST = getDetails(this.props.configs).defaultGST;
         this.state = {
-            rows:[initialRow()],
-            date:moment().fromat('YYYY-MM-DD'),
+            rows:[initialRow(0)],
+            date:moment().format('YYYY-MM-DD'),
             mobile:null,
             name:null,
-            defaultGST:defaultGST,
+            address:null,
+            defaultGST:0,
             billAmount:0,totalDisc:0,totalGST:0,totalMRP:0,
             priceMap:keyValueMap(this.props.allItems, 'Item','Price'),
-            nameIdMap:keyValueMap(this.props.allItems, 'Item','ItemId')
+            nameIdMap:keyValueMap(this.props.allItems, 'Item','ItemId'),
         };
-        this.getRowAt = this.getRowAt.bind(this);
         this.handleGridRowUpdate = this.handleGridRowUpdate.bind(this);
+        this.getRowAt = this.getRowAt.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
+        let rows = clone(this.state.rows);
         this.setState({
             priceMap:keyValueMap(nextProps.allItems,'Item','Price'),
             nameIdMap:keyValueMap(nextProps.allItems, 'Item','ItemId'),
-            defaultGST:getDetails(nextProps.configs).defaultGST
+            rows:rows
         });
     }
 
@@ -73,30 +76,39 @@ export class NewBill extends React.Component {
         e.preventDefault();
         let bill = {};
         bill.billItems = [];
+        let valid = this.state.mobile && this.state.mobile.length === 10;
         this.state.rows.forEach(row=>{
             let itemId = this.state.nameIdMap[row.item];
-            if(!itemId){
+            if(!itemId && row.total){
                 alert('Please select an item from teh list');
                 return;
             }
 
-            let data = {
-                itemId:itemId,
-                qty: parseInt(row.qty),
-                price: parseFloat(row.price),
-                gst: parseFloat(row.gst),
-                discount: parseFloat(row.discount)
+            if(row.qty && row.amount) {
+                let data = {
+                    itemId:itemId,
+                    qty: parseInt(row.qty),
+                    price: parseFloat(row.amount),
+                    gst: parseFloat(row.gst),
+                    discount: parseFloat(row.discount)
+                }
+                bill.billItems.push(data);
+                valid = valid && true;
             }
-            bill.billItems.push(data);
         });
 
-        blll.user = 'raghav';
-        blll.address = 'Online';
-        blll.name = this.state.name;
-        blll.mobile = this.state.mobile;
-        blll.date = this.state.date;
-
-        this.props.saveBill(bill);
+        if(valid) {
+            bill.user = this.props.userId;
+            bill.address = this.state.address;
+            bill.mobile = this.state.mobile;
+            bill.name = this.state.name;
+            bill.date = this.state.date;
+            bill.billAmount = Number(this.state.billAmount);
+            bill.type = 'PURCHASE';
+            this.props.saveBill(bill);
+        } else {
+            alert('Entries are not valid. PLease fill Mobile NO and Items correct;y');
+        }
     }
 
     handleGridRowUpdate(context) {
@@ -104,8 +116,8 @@ export class NewBill extends React.Component {
 
         if(context.action === 'CELL_UPDATE') {
             let rowId = context.fromRow;
-            let key = context.cellKey;
             let row = rows[rowId];
+            let key = context.cellKey;
             row[key] = context.updated[key];
 
             if(key === 'item') {
@@ -121,7 +133,7 @@ export class NewBill extends React.Component {
             //Add new row on validation
             let prevRow = rows [rows.length-1];
             if(prevRow.total>0 && prevRow.item && prevRow.item.trim().length) {
-                let newRow = initialRow(this.state.defaultGST);
+                let newRow = initialRow(0);
                 newRow.no = rows.length+1;
                 rows.push(newRow);
             }
@@ -157,7 +169,7 @@ export class NewBill extends React.Component {
     }
 
     render() {
-        if(this.props.isFetching) {
+        if(this.props.isFetching && this.props.configFetching) {
             return (<div> Loading</div>)
         }
         
@@ -165,13 +177,21 @@ export class NewBill extends React.Component {
             <Form horizontal>
                 <FormGroup>
                     <Col componentClass={ControlLabel} sm={3}><FormControl.Static>Mobile</FormControl.Static></Col>
+                    <Col sm={4}><FormControl type="text" value={this.state.mobile} name='mobile' placeholder="Mobile" onChange={this.handleChange}/> </Col>
+                </FormGroup>
+
+                <FormGroup>
                     <Col componentClass={ControlLabel} sm={4}><FormControl.Static>Customer Name</FormControl.Static></Col>
-                    <Col componentClass={ControlLabel} sm={3}><FormControl.Static>Bill Date</FormControl.Static></Col>
+                    <Col sm={4}><FormControl type="text" value={this.state.name} name='name' placeholder="Name" onChange={this.handleChange}/> </Col>
                 </FormGroup>
                 <FormGroup>
-                    <Col sm={3}><FormControl type="text" value={this.state.mobile} name='mobile' placeholder="Mobile" onChange={this.handleChange}/> </Col>
-                    <Col sm={4}><FormControl type="text" value={this.state.name} name='name' placeholder="Name" onChange={this.handleChange}/> </Col>
-                    <Col sm={3}><FormControl type="date" value={this.state.date} name='date' placeholder="Date" onChange={this.handleChange}/> </Col>
+                    <Col componentClass={ControlLabel} sm={3}><FormControl.Static>Bill Date</FormControl.Static></Col>
+                    <Col sm={4}><FormControl type="date" value={this.state.date} name='date' placeholder="Date" onChange={this.handleChange}/> </Col>
+                <FormGroup>
+                <FormGroup>
+                    <Col componentClass={ControlLabel} sm={3}><FormControl.Static>Party Address</FormControl.Static></Col>
+                    <Col sm={4}><FormControl type="text" value={this.state.address} name='address' placeholder="Address" onChange={this.handleChange}/> </Col>
+                <FormGroup>
                 </FormGroup>
             </Form>
             <ReactDataGrid
@@ -180,9 +200,9 @@ export class NewBill extends React.Component {
                 enableCellSelect={true}
                 enableRowSelect={true}
                 rowGetter={this.getRowAt}
-                rowCount={this.state.rows.length}
+                rowsCount={this.state.rows.length}
                 onGridRowsUpdated={this.handleGridRowUpdate}
-                minHeight={400}
+                minHeight={500}
             />
 
             <div className='pull-left' style={{width:'100%'}}>
@@ -211,8 +231,7 @@ export class NewBill extends React.Component {
             
             <hr />
             <div className='pull-left' align='center' style={{width:'100%'}}>
-                <Button bsStyle="primary" onClick={this.handleSave}>Save Bill</Button>
-                <Button bsStyle="default" onClick={this.handlePrint}>Print Bill</Button>
+                <Button bsStyle="primary" onClick={this.handleSave}>Create Purchase</Button>
             </div>
         </div>)
     }
@@ -220,17 +239,18 @@ export class NewBill extends React.Component {
 
 const mapStateToProps = (state)=>{
     return {
-        allItems: state.retrieveItems.items,
+        allItems: state.retrieveItems.items.filter(item=> item.Type === 'PURCHASE'),
         itemFetching: state.retrieveItems.fetching,
         configs: state.retrieveConfigs.configs,
-        configFetching: state.retrieveConfigs.fetching
+        configFetching: state.retrieveConfigs.fetching,
+        userId : state.fetchLogin.login.UserId
     }
 }
 
 const mapDispatchToProps = (dispatch) =>{
     return {
-        saveBill: (bill)=>dispatch(execute(USER_ACTIONS.CREATE_BILL, null, bill))
+        savePurchase : (bill)=>dispatch(execute(USER_ACTIONS.CREATE_PURCHASE, null, bill))
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(NewBill)
+export default connect(mapStateToProps,mapDispatchToProps)(CreatePurchase)

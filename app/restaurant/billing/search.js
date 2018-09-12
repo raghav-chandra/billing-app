@@ -10,13 +10,14 @@ const GRID_COLUMNS = [
     {key: 'mobile', name: 'Mobile'},
     {key: 'name', name: 'Name', resizable: true},
     {key: 'billDate', name: 'Date', resizable: true},
-    {key: 'finalAmount', name: 'Amount', resizable: true}
+    {key: 'finalAmount', name: 'Amount', resizable: true},
+    {key: 'sellPurchase', name: 'Type', resizable: true}
 ];
 
 export class BillSearch extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { fromDate: null, toDate: null, mobile: null, billId: null};
+        this.state = {fromDate: null, toDate: null, mobile: null, billId: null};
         this.handleChange = this.handleChange.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
         this.getRowAt = this.getRowAt.bind(this);

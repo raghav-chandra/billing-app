@@ -48,8 +48,8 @@ export class NewBill extends React.Component {
         super(props);
         let defaultGST = getDetails(this.props.configs).defaultGST;
         this.state = {
-            rows:[],
-            date:moment().fromat('YYYY-MM-DD'),
+            rows:[initialRow(defaultGST)],
+            date:moment().format('YYYY-MM-DD'),
             mobile:null,
             name:null,
             defaultGST:defaultGST ? defaultGST : 0,
@@ -57,8 +57,8 @@ export class NewBill extends React.Component {
             priceMap:keyValueMap(this.props.allItems, 'Item','Price'),
             nameIdMap:keyValueMap(this.props.allItems, 'Item','ItemId')
         };
-        this.getRowAt = this.getRowAt.bind(this);
         this.handleGridRowUpdate = this.handleGridRowUpdate.bind(this);
+        this.getRowAt = this.getRowAt.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
     }
@@ -84,7 +84,7 @@ export class NewBill extends React.Component {
         let valid = this.state.mobile && this.state.mobile.length === 10;
         this.state.rows.forEach(row=>{
             let itemId = this.state.nameIdMap[row.item];
-            if(!itemId){
+            if(!itemId && row.total){
                 alert('Please select an item from teh list');
                 return;
             }
@@ -103,12 +103,13 @@ export class NewBill extends React.Component {
         });
 
         if(valid) {
-            bill.user = this.props.userId;
+            bill.userId = this.props.userId;
             bill.address = 'Online';
             bill.mobile = this.state.mobile;
             bill.name = this.state.name;
             bill.date = this.state.date;
             bill.billAmount = Number (this.state.billAmount);
+            bill.type='SELL';
             this.props.saveBill(bill);
         } else {
             alert('Entry is invalid, PLease fill Mobil and Bill Items correctly');
@@ -174,7 +175,7 @@ export class NewBill extends React.Component {
 
     render() {
         if(this.props.itemFetching || this.props.configFetching) {
-            return (<div> Loading</div>)
+            return (<div> Loading Details...</div>)
         }
         
         return (<div style={{margin:'20px'}}>
@@ -236,7 +237,7 @@ export class NewBill extends React.Component {
 
 const mapStateToProps = (state)=>{
     return {
-        allItems: state.retrieveItems.items,
+        allItems: state.retrieveItems.items.filter(item => item.Type === 'SELL'),
         itemFetching: state.retrieveItems.fetching,
         configs: state.retrieveConfigs.configs,
         configFetching: state.retrieveConfigs.fetching,

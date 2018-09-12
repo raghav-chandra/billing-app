@@ -8,6 +8,9 @@ const CALL_MAPPER = {
     [USER_ACTIONS.FETCH_ALL_ITEMS]: (dispatch, action, param, data) => executeGetRequest(dispatch, 'billing/items/getAll', retrieveItems),
     [USER_ACTIONS.FETCH_ALL_CONFIGS]: (dispatch, action, param, data) => executeGetRequest(dispatch, 'billing/configs/getAll', fetchConfigs),
     [USER_ACTIONS.CREATE_BILL]: (dispatch, action, param, data) => executePostRequest(dispatch, 'billing/bills/create', data, billModal),
+    [USER_ACTIONS.CREATE_PURCHASE]: (dispatch, action, param, data) => executePostRequest(dispatch, 'billing/bills/create', data, (json)=>{console.log(json);
+    return ()=>{};}),
+
     [USER_ACTIONS.FETCH_BILL_BY_ID]: (dispatch, action, billId, data) => executeGetRequest(dispatch, 'billing/bill/' + billId, fetchById),
     [USER_ACTIONS.SEARCH_BILL]: (dispatch, action, billId, data) => executePostRequest(dispatch, 'billing/bills/search', data, searchBill),
     [USER_ACTIONS.CREATE_LOGIN]: (dispatch, action, billId, data) => executePostRequest(dispatch, 'billing/login/create', data, (lo) => {
