@@ -6,6 +6,7 @@ import CreateBill from './billing/sell';
 import CreatePurchase from './billing/purchase';
 import BillModal from './billing/BillPrintModal';
 import BillSearch from './billing/search';
+import DailyReport from './reports/daily';
 
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 
@@ -32,7 +33,7 @@ export class Restaurant extends React.Component {
             tabContents.push(<NavItem eventKey={5} href='#'> Purchase </NavItem>);
             tabContents.push(<NavDropdown eventKey={4} title='Admin' id='nav-dropdown'>
                                 <MenuItem eventKey='3.1'> Add User </MenuItem>
-                                <MenuItem eventKey='3.2'> Report2 </MenuItem>
+                                <MenuItem eventKey='3.2'> Daily Report </MenuItem>
                                 <MenuItem divider/>
                             </NavDropdown>);
         }
@@ -49,7 +50,7 @@ export class Restaurant extends React.Component {
         } else if (activeTab === '3.1') {
             component = <Login addUser={true}/>;
         } else if (activeTab === '3.2') {
-            component = <Report/>;
+            component = <DailyReport/>;
         } else if (activeTab === '4.1') {
             component = <MenuItem/>;
         } else if (activeTab === 5) {

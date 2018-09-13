@@ -47,3 +47,7 @@ export function fetchLogin(login, fetching=false) {
         fetching
     }
 }
+
+export function dailySalePurchase(reports, fetching = false) {
+    return {type: REDUX_ACTIONS.FETCH_DAILY_SALE_PURCHASE, reports, fetching };
+}

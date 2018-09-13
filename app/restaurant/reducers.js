@@ -6,6 +6,7 @@ const billInitialState = {fetching:true,bill:{}};
 const billSearchInitialState = {fetching: true, bills: []};
 const configsInitialState = {fetching:true,configs:[]};
 const loginInitialState = {fetching:true,login:{}};
+const dailyReportState = {fetching:true,reports:[]};
 
 function retrieveItems (state=itemsInitialState, action) {
     switch(action.type) {
@@ -62,4 +63,13 @@ function fetchLogin(state = loginInitialState, action) {
     }
 }
 
-export default combineReducers({retrieveItems,retrieveConfigs,retrieveBillById,billModal,searchBill,fetchLogin});
+function dailySalePurchase(state = dailyReportState, action) {
+    switch (action.type) {
+        case REDUX_ACTIONS.FETCH_DAILY_SALE_PURCHASE:
+            return Object.assign({}, state, {fetching: action.fetching, reports: action.reports});
+        default:
+            return state;
+    }
+}
+
+export default combineReducers({retrieveItems,retrieveConfigs,retrieveBillById,billModal,searchBill,fetchLogin, dailySalePurchase});

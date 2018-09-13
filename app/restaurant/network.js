@@ -1,5 +1,5 @@
 import {USER_ACTIONS} from './constants';
-import {retrieveItems, fetchById, fetchConfigs, billModal, searchBill, fetchLogin} from './actions';
+import {retrieveItems, fetchById, fetchConfigs, billModal, searchBill, fetchLogin, dailySalePurchase} from './actions';
  
 const HTTP_GET = 'GET'; 
 const HTTP_POST = 'POST';
@@ -13,6 +13,10 @@ const CALL_MAPPER = {
 
     [USER_ACTIONS.FETCH_BILL_BY_ID]: (dispatch, action, billId, data) => executeGetRequest(dispatch, 'billing/bill/' + billId, fetchById),
     [USER_ACTIONS.SEARCH_BILL]: (dispatch, action, billId, data) => executePostRequest(dispatch, 'billing/bills/search', data, searchBill),
+
+
+    [USER_ACTIONS.FETCH_DAILY_SALE_PURCHASE] : (dispatch, action, param, dates) => executePostRequest(dispatch,'billing/reports/daily', dates, dailySalePurchase),
+
     [USER_ACTIONS.CREATE_LOGIN]: (dispatch, action, billId, data) => executePostRequest(dispatch, 'billing/login/create', data, (lo) => {
         return fetchLogin({});
     }),
