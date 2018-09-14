@@ -3,6 +3,7 @@ package com.raga.tools.billing;
 import com.raga.tools.billing.service.AdminService;
 import com.raga.tools.billing.service.BillingService;
 import com.raga.tools.billing.service.LoginService;
+import com.raga.tools.billing.service.ReportingService;
 import com.raga.tools.billing.vertical.AdminVertical;
 import com.raga.tools.billing.vertical.BillingVertical;
 import com.raga.tools.billing.vertical.LoginVerticle;
@@ -65,6 +66,9 @@ public class StartupVerticle extends AbstractVerticle {
 
         router.post("/billing/login").handler(LoginService.getUserHandler());
         router.post("/billing/login/create").handler(LoginService.createUserHandler());
+
+
+        router.post("/billing/reports/daily").handler(ReportingService.dailyReportHandler());
 
 
         router.route().handler(StaticHandler.create(config().getString(WEB_ROOT)));

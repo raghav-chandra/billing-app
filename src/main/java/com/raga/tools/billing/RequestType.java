@@ -13,6 +13,9 @@ public enum RequestType {
     CREATE_CONFIG,
     GET_BILL_BY_CRITERIA,
 
+    REPORT_DAILY,
+
+
     CREATE_LOGIN,
     LOGIN_DETAIL
 }

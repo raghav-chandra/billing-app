@@ -2,6 +2,7 @@ package com.raga.tools.billing.vertical;
 
 import com.raga.tools.billing.RequestType;
 import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.sql.SQLConnection;
@@ -20,6 +21,8 @@ public class BillingVertical extends AbstractDBVertical {
     private static final String CONDITION_MOBILE_NO = " and c.MobileNo=? ";
     private static final String CONDITION_BILL_FROM_DATE = " and b.BillDate>=? ";
     private static final String CONDITION_BILL_TO_DATE = " and b.BillDate<=? ";
+
+    private static final String DAILY_REPORT_SQL = "select BillDate, sum(Amount) Total, Type from Bills where b.BillDate>=? and b.BillDate<=? group by BillDate, Type ";
 
     @Override
     public void start() {
@@ -74,7 +77,7 @@ public class BillingVertical extends AbstractDBVertical {
                         billObj.put("billItems", billItems);
                         rows.forEach(row -> {
                             JsonObject item = (JsonObject) row;
-                            billObj.put("billId", item.getInteger("BillId")).put("type",item.getString("Type")).put("customerId", item.getInteger("CustomerId")).put("user", item.getString("UpdatedBy")).put("billDate", item.getString("BillDate")).put("amount", item.getFloat("Amount")).put("mobile", item.getString("Mobile")).put("name", item.getString("Name")).put("address", item.getString("Address"));
+                            billObj.put("billId", item.getInteger("BillId")).put("type", item.getString("Type")).put("customerId", item.getInteger("CustomerId")).put("user", item.getString("UpdatedBy")).put("billDate", item.getString("BillDate")).put("amount", item.getFloat("Amount")).put("mobile", item.getString("Mobile")).put("name", item.getString("Name")).put("address", item.getString("Address"));
                             billItems.add(new JsonObject().put("itemId", item.getInteger("ItemId")).put("item", item.getString("Item")).put("qty", item.getInteger("Quantity")).put("price", item.getFloat("Price")).put("gst", item.getFloat("GSTPerc")).put("discount", item.getFloat("DiscountPerc")));
                         });
                         message12.reply(billObj);
@@ -117,6 +120,28 @@ public class BillingVertical extends AbstractDBVertical {
                     });
                 }
             }
+        });
+
+        eventBus.<JsonObject>consumer(RequestType.REPORT_DAILY.name(), message -> {
+            JsonObject criteria = message.body().getJsonObject("daily");
+            String fromDate = criteria.getString("fromDate");
+            String toDate = criteria.getString("toDate");
+            executeGet(DAILY_REPORT_SQL, new JsonArray().add(fromDate).add(toDate), message, (message1, result) -> {
+                JsonObject report = new JsonObject();
+                result.forEach(row -> {
+                    JsonObject res = (JsonObject) row;
+                    String billDate = res.getString("BillDate");
+                    String type = res.getString("Type");
+                    Float total = res.getFloat("Total");
+                    if (report.getJsonObject(billDate) == null) {
+                        report.put(billDate, new JsonObject().put(type, total));
+                    } else {
+                        report.getJsonObject(billDate).put(type, toDate);
+                    }
+                });
+                message.reply(report);
+            });
+
         });
     }
 }
