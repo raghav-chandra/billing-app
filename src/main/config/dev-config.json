@@ -2,8 +2,8 @@
   "hostname": "localhost",
   "web.port": 5600,
   "web.root": "dist",
-  "db.url": "",
+  "db.url": "jdbc:mysql://localhost:3306/reactapps",
   "db.user": "root",
-  "db.password": "root",
-  "db.driver": ""
+  "db.password": "",
+  "db.driver": "com.mysql.jdbc.Driver"
 }

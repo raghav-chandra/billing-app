@@ -25,10 +25,7 @@ public class AbstractDBVertical extends AbstractVerticle {
             String driver = config().getString("db.driver");
 
             jdbcClient = JDBCClient.createShared(vertx, new JsonObject()
-                    .put("url", url)
-                    .put("user", user)
-                    .put("password", pass)
-                    .put("driver_class", driver)
+                    .put("url", url).put("user", user).put("password", pass).put("driver_class", driver)
                     .put("max_pool_size", 5));
         }
         return jdbcClient;

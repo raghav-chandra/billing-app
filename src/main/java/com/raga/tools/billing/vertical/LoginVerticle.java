@@ -6,7 +6,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 public class LoginVerticle extends AbstractDBVertical {
-    private static final String CREATE_LOGIN_SQL = "insert into LoginDetails (UserId,Name, Password, UserP,CreatedBy) values (?,?,?,?,?)";
+    private static final String CREATE_LOGIN_SQL = "insert into LoginDetails (UserId,Name, Password, UserP, IsAdmin, CreatedBy) values (?,?,?,?,?,?)";
     private static final String GET_LOGIN_SQL = "select * from LoginDetails where UserP=?";
 
     @Override
@@ -18,8 +18,9 @@ public class LoginVerticle extends AbstractDBVertical {
             String user = login.getString("user");
             String password = login.getString("password");
             String name = login.getString("name");
-            String createdBy = login.getString("createdBy");
-            JsonArray param = new JsonArray().add(userId).add(name).add(password).add(user).add(createdBy);
+            String createdBy = "charag";//login.getString("createdBy");
+            String isAdmin = login.getString("isAdmin") == null ? "N" : login.getString("isAdmin");
+            JsonArray param = new JsonArray().add(userId).add(name).add(password).add(user).add(isAdmin).add(createdBy);
             executeGet(GET_LOGIN_SQL, new JsonArray().add(user), message, (messagel, rows) -> {
                 if (!rows.isEmpty()) {
                     messagel.fail(50, "UserId already exists");

@@ -9,7 +9,7 @@ import {USER_ACTIONS} from "./constants";
 export class Login extends React.Component {
     constructor(props){
         super(props);
-        this.state = {userId: '', name: '', password: '', cPassword: '', signUp: this.props.addUser};
+        this.state = {userId: '', name: '', password: '', cPassword: '', signUp: true};
         this.handleChange = this.handleChange.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
         this.handleSignUp = this.handleSignUp.bind(this);

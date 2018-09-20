@@ -187,11 +187,10 @@ export class CreatePurchase extends React.Component {
                 <FormGroup>
                     <Col componentClass={ControlLabel} sm={3}><FormControl.Static>Bill Date</FormControl.Static></Col>
                     <Col sm={4}><FormControl type="date" value={this.state.date} name='date' placeholder="Date" onChange={this.handleChange}/> </Col>
-                <FormGroup>
+                </FormGroup>
                 <FormGroup>
                     <Col componentClass={ControlLabel} sm={3}><FormControl.Static>Party Address</FormControl.Static></Col>
                     <Col sm={4}><FormControl type="text" value={this.state.address} name='address' placeholder="Address" onChange={this.handleChange}/> </Col>
-                <FormGroup>
                 </FormGroup>
             </Form>
             <ReactDataGrid

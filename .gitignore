@@ -5,3 +5,5 @@ dist/
 .idea/
 billing.iml
 package-lock.json
+*.lnk
+*.iml

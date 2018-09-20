@@ -41,7 +41,7 @@ create table MenuItems (
     UpdatedAt       timestamp default current_timestamp on update current_timestamp
 )
 
-create table Configurations {
+create table Configurations (
     ConfigGroup varchar(10) not null,
     Config      varchar(50) not null,
     Value       varchar(255) not null,
@@ -49,22 +49,23 @@ create table Configurations {
     UpdatedBy   varchar(50) not null,
     UpdatedAt   timestamp default current_timestamp on update current_timestamp,
     unique key CONFIG_GROUP(ConfigGroup, Config)
-}
+)
 
-create table Transactions {
+create table Transactions (
     Type        varchar(8) not null,
     BillId      int not null,
     Amount      float not null,
     TransDate   date not null,
     CreatedBY   varchar(50),
     CreatedAt   timestamp default current_timestamp
-}
+)
 
 create table LoginDetails (
     UserId      varchar(10) not null unique key,
     Name        varchar(50) not null,
     Password    varchar(100) not null,
     UserP       varchar(100) not null,
+    IsAdmin     char(1) not null default 'N',
     CreatedBY   varchar(50) not null,
     CreatedAt   timestamp default current_timestamp
 )
